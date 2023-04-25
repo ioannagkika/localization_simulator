@@ -195,7 +195,7 @@ class App(customtkinter.CTk):
                                     lat2 = self.new_marker_1[-1][0], long2 = self.new_marker_1[-1][1],
                                     kms = int(self.speed.get())/int(self.time.get()) - self.d)
                 self.new_marker_1.insert(-1, (float(endiameso_1.find_destination().split(",")[0]), float(endiameso_1.find_destination().split(",")[1])))
-                self.P1.append(self.new_marker_1[-1])
+                self.P1.append(self.new_marker_1[-2])
                 #distance = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
                 distance = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
                 self.d = 0
@@ -216,9 +216,7 @@ class App(customtkinter.CTk):
             self.d = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
             #print(self.d)
             if self.d < int(self.speed.get())/int(self.time.get()):
-                self.P1 = [self.new_marker_1[1]]
-                
-                pass
+                self.P1 = [self.new_marker_1[1:]]
             if self.d == int(self.speed.get())/int(self.time.get()):
                 self.P1 = self.new_marker_1[1:]
                 #print("P1 = ", P1)
