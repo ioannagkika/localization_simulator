@@ -126,6 +126,7 @@ class App(customtkinter.CTk):
         self.filename = None
         self.d = 0
         self.P1 = []
+        self.l =[]
         #self.tool = "visual"
         # self.map_widget.add_right_click_menu_command(label="Add Marker",
         #                                 command=self.add_marker_event,
@@ -186,10 +187,12 @@ class App(customtkinter.CTk):
         if (len(self.new_marker_1)>=3) and (len(self.P1)>=3) and (self.new_marker_1[-2][0] != 0) and (self.new_marker_1[1][0] != 0):
             distance = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
             if distance + self.d == int(self.speed.get())/int(self.time.get()):
+                self.l = []
                 self.P1.append(self.new_marker_1[-1])
                 #print("P1 = ", P1)
                 self.d = 0
             while distance + self.d > int(self.speed.get())/int(self.time.get()): #and self.d>10
+                self.l = []
                 #print("d = ", self.d)
                 endiameso_1 = destination(lat1 = self.new_marker_1[-2][0], long1 = self.new_marker_1[-2][1],
                                     lat2 = self.new_marker_1[-1][0], long2 = self.new_marker_1[-1][1],
@@ -210,18 +213,28 @@ class App(customtkinter.CTk):
                 #print("P1 = ", P1)
                 #self.new_marker_1.pop(-1)
                 self.d = distance + self.d
+                self.l.append(self.d)
+                
 
         #I have already added two points on the map
         elif (len(self.new_marker_1)>=3) and (len(self.P1)<3) and (self.new_marker_1[-2][0] != 0) and (self.new_marker_1[-1][0] != 0):
             self.d = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
             #print(self.d)
             if self.d < int(self.speed.get())/int(self.time.get()):
-                self.P1 = [self.new_marker_1[1:]]
+                self.l.append(self.d)
+                
+                print(self.l)
+                self.P1 = [self.new_marker_1[1]]
+                self.new_marker_1.pop(-1)
+                self.d = sum(self.l)
+                print(self.d)
             if self.d == int(self.speed.get())/int(self.time.get()):
+                self.l = []
                 self.P1 = self.new_marker_1[1:]
                 #print("P1 = ", P1)
                 self.d = 0
             while self.d > int(self.speed.get())/int(self.time.get()):
+                self.l = []
                 endiameso = destination(lat2 = self.new_marker_1[-1][0], long2 = self.new_marker_1[-1][1],
                                     lat1 = self.new_marker_1[-2][0], long1 = self.new_marker_1[-2][1],
                                     kms = int(self.speed.get())/int(self.time.get()))
@@ -238,7 +251,7 @@ class App(customtkinter.CTk):
 
         print("P1 = ", self.P1)
         print(self.new_marker_1)
-        return self.d, self.new_marker_1, self.P1    
+        return self.d, self.new_marker_1, self.P1, self.l    
     ''''  
         if (len(self.new_marker_1)>1) and (self.new_marker_1[-2][0] != 0) and (self.new_marker_1[-1][0] != 0):
             distance = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
