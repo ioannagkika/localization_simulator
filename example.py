@@ -125,6 +125,7 @@ class App(customtkinter.CTk):
         self.icon = icon
         self.filename = None
         self.d = 0
+        self.P1 = []
         #self.tool = "visual"
         # self.map_widget.add_right_click_menu_command(label="Add Marker",
         #                                 command=self.add_marker_event,
@@ -181,48 +182,65 @@ class App(customtkinter.CTk):
         
         new_marker = self.map_widget.set_marker(coords[0], coords[1], text = "("+ str(coords[0]) +","+ str(coords[1])+")", font = "Tahoma 9", text_color = '#e61212', icon = self.set_icon()).position
         self.new_marker_1.append(new_marker)
-        #I have already added two points on the map
-        if (len(self.new_marker_1)==3) and (self.new_marker_1[-2][0] != 0) and (self.new_marker_1[-1][0] != 0):
-            self.d = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
-            if self.d < int(self.speed.get())/int(self.time.get()):
-                P1 = self.new_marker_1[1]
-                #print("P1 = ", P1)
-            if self.d == int(self.speed.get())/int(self.time.get()):
-                P1 = self.new_marker_1[1:]
+
+        if (len(self.new_marker_1)>=3) and (len(self.P1)>=3) and (self.new_marker_1[-2][0] != 0) and (self.new_marker_1[1][0] != 0):
+            distance = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
+            if distance + self.d == int(self.speed.get())/int(self.time.get()):
+                self.P1.append(self.new_marker_1[-1])
                 #print("P1 = ", P1)
                 self.d = 0
-            if self.d > int(self.speed.get())/int(self.time.get()):
-                endiameso = destination(lat1 = self.new_marker_1[-1][0], long1 = self.new_marker_1[-1][1],
-                                    lat2 = self.new_marker_1[-2][0], long2 = self.new_marker_1[-2][1],
+            while distance + self.d > int(self.speed.get())/int(self.time.get()): #and self.d>10
+                #print("d = ", self.d)
+                endiameso_1 = destination(lat1 = self.new_marker_1[-2][0], long1 = self.new_marker_1[-2][1],
+                                    lat2 = self.new_marker_1[-1][0], long2 = self.new_marker_1[-1][1],
+                                    kms = int(self.speed.get())/int(self.time.get()) - self.d)
+                self.new_marker_1.insert(-1, (float(endiameso_1.find_destination().split(",")[0]), float(endiameso_1.find_destination().split(",")[1])))
+                self.P1.append(self.new_marker_1[-1])
+                #distance = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
+                distance = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
+                self.d = 0
+                #distance = distance - int(self.speed.get())/int(self.time.get()) # no
+                #print(self.d)
+                #print("distance", distance)
+                #self.d = distance + self.d - int(self.speed.get())/int(self.time.get())
+                #print("P1 = ", P1) 
+                #print(endiameso.find_destination())
+            if distance + self.d < int(self.speed.get())/int(self.time.get()):
+                #P1 = self.new_marker_1[:-1]
+                #print("P1 = ", P1)
+                #self.new_marker_1.pop(-1)
+                self.d = distance + self.d
+
+        #I have already added two points on the map
+        elif (len(self.new_marker_1)>=3) and (len(self.P1)<3) and (self.new_marker_1[-2][0] != 0) and (self.new_marker_1[-1][0] != 0):
+            self.d = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
+            #print(self.d)
+            if self.d < int(self.speed.get())/int(self.time.get()):
+                self.P1 = [self.new_marker_1[1]]
+                
+                pass
+            if self.d == int(self.speed.get())/int(self.time.get()):
+                self.P1 = self.new_marker_1[1:]
+                #print("P1 = ", P1)
+                self.d = 0
+            while self.d > int(self.speed.get())/int(self.time.get()):
+                endiameso = destination(lat2 = self.new_marker_1[-1][0], long2 = self.new_marker_1[-1][1],
+                                    lat1 = self.new_marker_1[-2][0], long1 = self.new_marker_1[-2][1],
                                     kms = int(self.speed.get())/int(self.time.get()))
                 print("Endiameso ", endiameso.find_destination())
                 self.new_marker_1.insert(-1, (float(endiameso.find_destination().split(",")[0]), float(endiameso.find_destination().split(",")[1])))
-                P1 = self.new_marker_1.pop(-2)
-                #print("P1 = ", P1)
-                self.d = self.d - int(self.speed.get())/int(self.time.get())
-
-        if (len(self.new_marker_1)>3) and (self.new_marker_1[-2][0] != 0) and (self.new_marker_1[1][0] != 0):
-            distance = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
-            if distance + self.d == int(self.speed.get())/int(self.time.get()):
-                P1 = self.new_marker_1
-                #print("P1 = ", P1)
-                self.d = 0
-            if distance + self.d > int(self.speed.get())/int(self.time.get()): #and self.d>10
-                endiameso = destination(lat1 = self.new_marker_1[-2][0], long1 = self.new_marker_1[-2][1],
-                                    lat2 = self.new_marker_1[-1][0], long2 = self.new_marker_1[-1][1],
-                                    kms = int(self.speed.get())/int(self.time.get()) - self.d)
-                self.new_marker_1.insert(-1, (float(endiameso.find_destination().split(",")[0]), float(endiameso.find_destination().split(",")[1])))
                 #P1 = self.new_marker_1.pop(-2)
-                distance = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
-                self.d = distance + self.d - int(self.speed.get())/int(self.time.get())
-                #print("P1 = ", P1) 
-                print(endiameso.find_destination())
-            if distance + self.d < int(self.speed.get())/int(self.time.get()):
-                P1 = self.new_marker_1[:-1]
                 #print("P1 = ", P1)
-                self.d = distance + self.d
+                #self.d = self.d - int(self.speed.get())/int(self.time.get())
+                #print(self.new_marker_1)
+                self.d = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
+                self.P1 = self.new_marker_1[1:-1]
+                #print(self.d)
+
+
+        print("P1 = ", self.P1)
         print(self.new_marker_1)
-        return self.d, self.new_marker_1      
+        return self.d, self.new_marker_1, self.P1    
     ''''  
         if (len(self.new_marker_1)>1) and (self.new_marker_1[-2][0] != 0) and (self.new_marker_1[-1][0] != 0):
             distance = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
