@@ -24,8 +24,8 @@ class destination:
         return coords #(float(coords.split(",")[0]) , float(coords.split(",")[1]))
 
 # print(get_bearing(40.693441180545996, 22.851500848046868, 40.655425024320344, 22.950377801171868))
-# ob1 = destination(lat1 = 40.668840911211134, long1 = 22.87388052282508, lat2 = 40.64562656008282, long2 = 22.93004419945957, kms =2)
+#ob1 = destination(lat1 = 40.668840911211134, long1 = 22.87388052282508, lat2 = 40.64562656008282, long2 = 22.93004419945957, kms =2)
 # distance = geodesic((40.670009126290765, 22.880339959374993), (40.64562656008282, 22.93004419945957)).km
 # print(distance)
-# print(ob1.find_destination())
+#print(ob1.find_destination())
 
