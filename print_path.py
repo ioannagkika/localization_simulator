@@ -7,6 +7,7 @@ import geopy.distance
 from geopy import Point
 from additional_functions import destination
 from tkintermapview.canvas_position_marker import CanvasPositionMarker
+from set_path import wanted_marker
 
 customtkinter.set_default_color_theme("blue")
 
@@ -130,13 +131,16 @@ class App(customtkinter.CTk):
         self.new_path_1 = []
         self.icon = icon
         self.filename = None
-        self.d = 0 #distance between two markers
-        self.P1 = [] #list of the wanted markers
-        self.l =[] #list that appends the distances between the markers that we have added until the sum of the distances gets the wanted value (speed * time diff)
+        #self.d = 0 #distance between two markers
+        #self.P1 = [] #list of the wanted markers
+        #self.l =[] #list that appends the distances between the markers that we have added until the sum of the distances gets the wanted value (speed * time diff)
         self.markers=[]
         self.map_widget.add_right_click_menu_command(label="Add Marker",
                                         command=self.add_marker_event,
                                         pass_coords=True)
+        self.visual_marker = wanted_marker()
+        self.inertio_marker = wanted_marker()
+        self.galileo_marker = wanted_marker()
 
     def search_event(self, event=None):
         self.map_widget.set_address(self.entry.get())
@@ -182,43 +186,14 @@ class App(customtkinter.CTk):
         print("Add marker:", coords)
         
         new_marker = self.map_widget.set_marker(coords[0], coords[1], text = "("+ str(coords[0]) +","+ str(coords[1])+")", font = "Tahoma 9", text_color = '#e61212', icon = self.set_icon())
-        self.new_marker_1.append(new_marker.position)
+        #self.new_marker_1.append(new_marker.position)
         self.markers.append(new_marker)
-        self.set_path(dt = self.time_visual.get())
-
-    def set_path(self, dt):
-        #I have already added two points on the map and want to print P1, which is the list points of interest
-        if (len(self.new_marker_1)>=3) and (self.new_marker_1[-2][0] != 0) and (self.new_marker_1[-1][0] != 0):
-            self.d = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
-            if sum(self.l) > float(self.speed.get())*float(dt):
-                self.l = []
-                self.l.append(self.d)
-            else:
-                self.l.append(self.d)
-            if sum(self.l) < float(self.speed.get())*float(dt):
-                if self.P1 == []:
-                    self.P1.append(self.new_marker_1[1])
-                self.d = sum(self.l)
-            if sum(self.l) == float(self.speed.get())*float(dt):
-                self.l = []
-                self.P1.append(self.new_marker_1[-1])
-                self.d = 0
-            while sum(self.l) > float(self.speed.get())*float(dt):
-                endiameso = destination(lat2 = self.new_marker_1[-1][0], long2 = self.new_marker_1[-1][1],
-                                    lat1 = self.new_marker_1[-2][0], long1 = self.new_marker_1[-2][1],
-                                    kms = float(self.speed.get())*float(dt) - sum(self.l[:-1]))
-                self.new_marker_1.insert(-1, (float(endiameso.find_destination().split(",")[0]), float(endiameso.find_destination().split(",")[1])))
-                self.d = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
-                if self.P1 == []:
-                    self.P1 = [self.new_marker_1[1]]
-                    
-                self.P1.append((float(endiameso.find_destination().split(",")[0]), float(endiameso.find_destination().split(",")[1])))
-                self.l = [sum(self.l) - float(self.speed.get())*float(dt)]
-
-        print("P1 = ", self.P1)
-        print("new ", self.new_marker_1)
-        print(self.d)
-        return self.d, self.new_marker_1, self.P1, self.l     
+        self.visual_marker.new_marker_1.append(new_marker.position)
+        self.inertio_marker.new_marker_1.append(new_marker.position)
+        self.galileo_marker.new_marker_1.append(new_marker.position)
+        self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
+        self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
+        self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
 
 
 
@@ -228,10 +203,20 @@ class App(customtkinter.CTk):
         for marker in self.markers:    
             marker.delete()
         # self.new_marker_1.clear()
-        self.P1.clear()
-        self.d = 0
-        self.l = []
-        self.new_marker_1=[(0,0)]
+        self.visual_marker.P1.clear()
+        self.visual_marker.d = 0
+        self.visual_marker.l = []
+        self.visual_marker.new_marker_1=[(0,0)]
+
+        self.inertio_marker.P1.clear()
+        self.inertio_marker.d = 0
+        self.inertio_marker.l = []
+        self.inertio_marker.new_marker_1=[(0,0)]
+
+        self.galileo_marker.P1.clear()
+        self.galileo_marker.d = 0
+        self.galileo_marker.l = []
+        self.galileo_marker.new_marker_1=[(0,0)]        
 
 
     def clear_path_event(self):
