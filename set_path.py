@@ -2,6 +2,8 @@ import geopy.distance
 from geopy import Point
 from additional_functions import destination
 from tkintermapview.canvas_position_marker import CanvasPositionMarker
+import tkinter
+import sys
 
 class wanted_marker():
         def __init__(self) -> None:
@@ -15,6 +17,14 @@ class wanted_marker():
         def set_marker(self, dt, speed):
         #I have already added two points on the map and want to print P1, which is the list points of interest
             if (len(self.new_marker_1)>=3) and (self.new_marker_1[-2][0] != 0) and (self.new_marker_1[-1][0] != 0):
+                if speed == "":
+                    tkinter.messagebox.showerror(title="", message="No speed selected")
+                    #assert (speed != ""), "No speed"
+                    #sys.exit(1)
+                    #raise ValueError("Cannot divide by zero")
+                    sys.exit("No speed selected")
+                else:
+                    pass
                 self.d = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
                 if sum(self.l) > float(speed)*float(dt):
                     self.l = []
@@ -42,6 +52,6 @@ class wanted_marker():
                     self.l = [sum(self.l) - float(speed)*float(dt)]
 
             print("P1 = ", self.P1)
-            print("new ", self.new_marker_1)
-            print(self.d)
+            #print("new ", self.new_marker_1)
+            #print(self.d)
             return self.d, self.new_marker_1, self.P1, self.l   
