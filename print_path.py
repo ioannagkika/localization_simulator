@@ -165,16 +165,19 @@ class App(customtkinter.CTk):
 
         if (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 0):
             #self.visual_marker = wanted_marker()
+            print("visual")
             self.visual_marker.new_marker_1.append(new_marker.position)
             self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
 
         elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 0):
             #self.inertio_marker = wanted_marker()
+            print("inertio")
             self.inertio_marker.new_marker_1.append(new_marker.position)
             self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
 
         elif (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 1):
             #self.galileo_marker = wanted_marker()
+            print("galileo")
             self.galileo_marker.new_marker_1.append(new_marker.position)
             self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
 
@@ -187,36 +190,45 @@ class App(customtkinter.CTk):
 
         elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 0):
             #self.visual_marker = wanted_marker()
+            print("visual")
             self.visual_marker.new_marker_1.append(new_marker.position)
             self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
             #self.inertio_marker = wanted_marker()
+            print("inertio")
             self.inertio_marker.new_marker_1.append(new_marker.position)
             self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
 
         elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 1):
             #self.visual_marker = wanted_marker()
+            print("visual")
             self.visual_marker.new_marker_1.append(new_marker.position)
             self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
             #self.galileo_marker = wanted_marker()
+            print("galileo")
             self.galileo_marker.new_marker_1.append(new_marker.position)
             self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
 
         elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 1):
             #self.inertio_marker = wanted_marker()
+            print("inertio")
             self.inertio_marker.new_marker_1.append(new_marker.position)
             self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
             #self.galileo_marker = wanted_marker()
+            print("galileo")
             self.galileo_marker.new_marker_1.append(new_marker.position)
             self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
 
         elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 1):
             #self.visual_marker = wanted_marker()
+            print("visual")
             self.visual_marker.new_marker_1.append(new_marker.position)
             self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
             #self.inertio_marker = wanted_marker()
+            print("inertio")
             self.inertio_marker.new_marker_1.append(new_marker.position)
             self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
             #self.galileo_marker = wanted_marker()
+            print("galileo")
             self.galileo_marker.new_marker_1.append(new_marker.position)
             self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())        
 
