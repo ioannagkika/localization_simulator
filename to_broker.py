@@ -7,7 +7,7 @@ import threading
 
 class messages():
 
-    def __init__(self, lat, long, dateandtime = datetime(2023, 5, 11, 12, 36, 57, 643401), PublishingTopic= "hi", json_msg = {}, brokerip = '192.168.100.12' , frid = 'FR003', ToolID = 'LOC-SELF', sourceid = "FR001#FR") -> None:
+    def __init__(self, lat = 1, long = 1, dateandtime = datetime(2023, 5, 11, 12, 36, 57, 643401), PublishingTopic= "hi", json_msg = {}, brokerip = '192.168.100.12' , frid = 'FR003', ToolID = 'LOC-SELF', sourceid = "FR001#FR") -> None:
         #self.tool = tool
         self.brokerip = brokerip
         self.frid = frid
@@ -147,9 +147,9 @@ class messages():
         # Disconnect from the MQTT broker
         client.disconnect()
 
-    def threads(self, lat, long, visual_timediff, inertio_timediff, galileo_timediff):
-        lat = [0,1,2]
-        long = [0,1,2]
+    def threads(self, visual_latitude, visual_longitude, inertio_latitude, inertio_longitude, galileo_latitude, galileo_longitude, visual_timediff, inertio_timediff, galileo_timediff):
+        #lat = [0,1,2]
+        #long = [0,1,2]
         mqtt_visual = []
         mqtt_inertio = []
         mqtt_galileo = []
@@ -164,21 +164,25 @@ class messages():
         # t_visual = timedelta(seconds = 10)
         # t_inertio = timedelta(seconds = 20)
         # t_galileo = timedelta(seconds = 30)
-        for i in range(len(lat)):
+        for i in range(len(visual_latitude)):
         # timediff = 0
         # dateandtime = dateandtime + timedelta(hours = timediff)
 
             # d_galileo = d + t_galileo
-            mqtt_visual.append(messages(ToolID = 'LOC-SELF', lat = lat[i], long = long[i],  dateandtime = date_visual))
+            mqtt_visual.append(messages(ToolID = 'LOC-SELF', lat = visual_latitude[i], long = visual_longitude[i],  dateandtime = date_visual))
             mess_visual.append([(mqtt_visual[i].PublishingTopic, mqtt_visual[i].create_json())])
             #self.dateandtime = self.dateandtime + timedelta(seconds = self.timediff)
-            mqtt_inertio.append(messages(ToolID = 'LOC-IBL', lat = lat[i], long = long[i],  dateandtime = date_inertio))
+            date_visual = date_visual + timedelta(seconds = visual_timediff)
+
+        for i in range(len(inertio_latitude)):    
+            mqtt_inertio.append(messages(ToolID = 'LOC-IBL', lat = inertio_latitude[i], long = inertio_longitude[i],  dateandtime = date_inertio))
             mess_inertio.append([(mqtt_inertio[i].PublishingTopic, mqtt_inertio[i].create_json())])
             #self.dateandtime = self.dateandtime + timedelta(seconds = self.timediff)
-            mqtt_galileo.append(messages(ToolID = 'LOC-GLT', lat = lat[i], long = long[i],  dateandtime = date_galileo))
-            mess_galileo.append([(mqtt_galileo[i].PublishingTopic, mqtt_galileo[i].create_json())])
-            date_visual = date_visual + timedelta(seconds = visual_timediff)
             date_inertio = date_inertio + timedelta(seconds = inertio_timediff)
+
+        for i in range(len(galileo_latitude)): 
+            mqtt_galileo.append(messages(ToolID = 'LOC-GLT', lat = galileo_latitude[i], long = galileo_longitude[i],  dateandtime = date_galileo))
+            mess_galileo.append([(mqtt_galileo[i].PublishingTopic, mqtt_galileo[i].create_json())])
             date_galileo  = date_galileo + timedelta(seconds = galileo_timediff)
             #self.dateandtime = self.dateandtime + timedelta(seconds = self.timediff)
 
@@ -201,22 +205,28 @@ class messages():
             threads_inertio = []
             threads_galileo = []
             
-        for i in range(len(lat)):
+        for i in range((len(visual_latitude))):
             for topic, message in mess_visual[i]:
                 t_visual = threading.Thread(target=mqtt_visual[i].publish_message(), args=(topic, message))
                 #time.sleep(10)
+                threads_visual.append(t_visual)
 
+        for i in range(len(inertio_latitude)):
             for topic, message in mess_inertio[i]:
                 t_inertio = threading.Thread(target=mqtt_inertio[i].publish_message(), args=(topic, message))
                 #time.sleep(10)
+                threads_inertio.append(t_inertio)
 
+        for i in range(len(galileo_latitude)):
             for topic, message in mess_galileo[i]:
                 t_galileo = threading.Thread(target=mqtt_galileo[i].publish_message(), args=(topic, message))
                 #time.sleep(10)
-
-                threads_visual.append(t_visual)
-                threads_inertio.append(t_inertio)
                 threads_galileo.append(t_galileo)
+                
+
+                
+                
+                
         t_visual.start()
         t_inertio.start()
         t_galileo.start()
@@ -229,7 +239,6 @@ class messages():
         print("All messages published.")
         #return self.timediff
 
-th = messages(dateandtime = datetime(2023, 5, 11, 12, 36, 57, 643401), lat = 1, long = 1)
-th.threads(lat = [0,1,2], long = [0,1,2], visual_timediff=1, inertio_timediff=2, galileo_timediff=3)
+
             # if __name__ == '__main__':
             #     run()

@@ -8,6 +8,7 @@ from geopy import Point
 from additional_functions import destination
 from tkintermapview.canvas_position_marker import CanvasPositionMarker
 from set_path import wanted_marker
+from to_broker import messages
 import sys
 
 customtkinter.set_default_color_theme("blue")
@@ -47,32 +48,36 @@ class App(customtkinter.CTk):
 
         self.frame_left.grid_rowconfigure(2, weight=1)
 
-        self.clear = customtkinter.CTkButton(master=self.frame_left,
-                                                text="Clear Markers",
-                                                command=self.clear_marker_event, fg_color="red", hover_color="pink")
-        self.clear.grid(pady=(20, 0), padx=(5, 5), row=3, column=0)
-
         self.broker_button = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="Broker IP")
         self.broker_button.grid(pady=(10, 0), padx=(5, 5), row=0, column=0)
 
         self.datetime_button = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="datetime")
         self.datetime_button.grid(pady=(10, 0), padx=(5, 5), row=1, column=0)
 
+
         self.fr_id_button = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="FR ID")
-        self.fr_id_button.grid(pady=(10, 0), padx=(5, 5), row=2, column=0, sticky = "n")   
+        self.fr_id_button.grid(pady=(10, 0), padx=(5, 5), row=2, column=0, sticky = "n")  
+
+        self.clear = customtkinter.CTkButton(master=self.frame_left,
+                                                text="Clear Markers",
+                                                command=self.clear_marker_event, fg_color="red", hover_color="pink")
+        self.clear.grid(pady=(20, 0), padx=(5, 5), row=3, column=0)
+
+        self.send = customtkinter.CTkButton(master=self.frame_left, text="send to broker", command = self.send_message, fg_color="green", hover_color="light green")
+        self.send.grid(pady=(10, 0), padx=(5, 5), row=4, column=0)
 
 
         self.map_label = customtkinter.CTkLabel(self.frame_left, text="Tile Server:", anchor="w")
-        self.map_label.grid(row=4, column=0, padx=(0, 0), pady=(20, 0))
+        self.map_label.grid(row=5, column=0, padx=(0, 0), pady=(20, 0))
         self.map_option_menu = customtkinter.CTkOptionMenu(self.frame_left, values=["OpenStreetMap", "Google normal", "Google satellite", "Paint", "Black and White", "Terrain"],
                                                                        command=self.change_map)
-        self.map_option_menu.grid(row=5, column=0, padx=(0, 0), pady=(10, 0))
+        self.map_option_menu.grid(row=6, column=0, padx=(0, 0), pady=(10, 0))
 
         self.appearance_mode_label = customtkinter.CTkLabel(self.frame_left, text="Appearance Mode:", anchor="w")
-        self.appearance_mode_label.grid(row=6, column=0, padx=(0, 0), pady=(10, 0))
+        self.appearance_mode_label.grid(row=7, column=0, padx=(0, 0), pady=(10, 0))
         self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.frame_left, values=["Light", "Dark", "System"],
                                                                        command=self.change_appearance_mode)
-        self.appearance_mode_optionemenu.grid(row=7, column=0, padx=(0, 0), pady=(10, 0))
+        self.appearance_mode_optionemenu.grid(row=8, column=0, padx=(0, 0), pady=(10, 0))
 
 
         self.var1 = tkinter.IntVar()
@@ -83,28 +88,28 @@ class App(customtkinter.CTk):
                                                   text = "visual",
                                                   command=self.add_marker_event,
                                                   variable=self.var1, onvalue=1, offvalue=0)
-        self.visual_button.grid(pady=(10, 0), padx=(0, 0), row=8, column=0)
+        self.visual_button.grid(pady=(10, 0), padx=(0, 0), row=9, column=0)
         self.time_visual = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff")
-        self.time_visual.grid(pady=(10, 0), padx=(10, 20), row=8, column=1)
+        self.time_visual.grid(pady=(10, 0), padx=(10, 20), row=9, column=1)
 
         self.inertio_button = customtkinter.CTkCheckBox(master=self.frame_left, 
                                                   text="inertio",
                                                   command=self.add_marker_event,
                                                   variable=self.var2, onvalue=1, offvalue=0)
-        self.inertio_button.grid(pady=(10, 0), padx=(0, 0), row=9, column=0)
+        self.inertio_button.grid(pady=(10, 0), padx=(0, 0), row=10, column=0)
         self.time_inertio = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff")
-        self.time_inertio.grid(pady=(10, 0), padx=(10, 20), row=9, column=1)
+        self.time_inertio.grid(pady=(10, 0), padx=(10, 20), row=10, column=1)
 
         self.galileo_button = customtkinter.CTkCheckBox(master=self.frame_left, 
                                                   text="galileo",
                                                   command=self.add_marker_event,
                                                   variable=self.var3, onvalue=1, offvalue=0)
-        self.galileo_button.grid(pady=(10, 0), padx=(0, 0), row=10, column=0)
+        self.galileo_button.grid(pady=(10, 0), padx=(0, 0), row=11, column=0)
         self.time_galileo = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff")
-        self.time_galileo.grid(pady=(10, 0), padx=(10, 20), row=10, column=1)
+        self.time_galileo.grid(pady=(10, 0), padx=(10, 20), row=11, column=1)
 
         self.speed = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="speed")
-        self.speed.grid(pady=(10, 20), padx=(0, 0), row=11, column=0)
+        self.speed.grid(pady=(10, 20), padx=(0, 0), row=12, column=0)
 
 
 
@@ -182,11 +187,11 @@ class App(customtkinter.CTk):
             self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
 
         elif (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 0):
-            tkinter.messagebox.showerror(title=None, message="No tool selected")
-            sys.exit("No tool selected")
+            tkinter.messagebox.showerror(title=None, message="No tool selected. Please restart.")
+            #sys.exit("No tool selected")
             # self.clear_marker_event()
             # self.clear_path_event()
-            # assert ((self.var1.get() == 1) or (self.var2.get() == 1) or (self.var3.get() == 1)), "No tool selected"
+            assert ((self.var1.get() == 1) or (self.var2.get() == 1) or (self.var3.get() == 1)), "No tool selected"
 
         elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 0):
             #self.visual_marker = wanted_marker()
@@ -280,7 +285,16 @@ class App(customtkinter.CTk):
         elif new_map == "Black and White":
             self.map_widget.set_tile_server("http://a.tile.stamen.com/toner/{z}/{x}/{y}.png",)
         elif new_map == "Terrain":
-            self.map_widget.set_tile_server("http://a.tile.stamen.com/terrain/{z}/{x}/{y}.png",)        
+            self.map_widget.set_tile_server("http://a.tile.stamen.com/terrain/{z}/{x}/{y}.png",)     
+
+    def send_message(self):
+        broker_messages = messages()
+        broker_messages.threads(visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
+                                inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
+                                galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
+                                visual_timediff= float(self.time_visual.get()), 
+                                inertio_timediff=float(self.time_inertio.get()), 
+                                galileo_timediff=float(self.time_galileo.get()))   
 
     def on_closing(self, event=0):
         self.destroy()
