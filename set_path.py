@@ -18,11 +18,12 @@ class wanted_marker():
         #I have already added two points on the map and want to print P1, which is the list points of interest
             if (len(self.new_marker_1)>=3) and (self.new_marker_1[-2][0] != 0) and (self.new_marker_1[-1][0] != 0):
                 if speed == "":
-                    tkinter.messagebox.showerror(title="", message="No speed selected")
-                    #assert (speed != ""), "No speed"
+                    tkinter.messagebox.showerror(title="", message="No speed selected. Please restart.")
+                    assert (speed != ""), "No speed"
                     #sys.exit(1)
+                    #raise ValueError("No speed selected")
+                    #sys.exit("No speed selected")
                     #raise ValueError("Cannot divide by zero")
-                    sys.exit("No speed selected")
                 else:
                     pass
                 self.d = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
