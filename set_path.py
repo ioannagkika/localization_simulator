@@ -34,7 +34,7 @@ class wanted_marker():
                     self.l.append(self.d)
                 if sum(self.l) < float(speed)*float(dt):
                     if self.P1 == []:
-                        self.P1.append(self.new_marker_1[1])
+                        self.P1.append(self.new_marker_1[0])
                     self.d = sum(self.l)
                 if sum(self.l) == float(speed)*float(dt):
                     self.l = []
@@ -47,7 +47,7 @@ class wanted_marker():
                     self.new_marker_1.insert(-1, (float(endiameso.find_destination().split(",")[0]), float(endiameso.find_destination().split(",")[1])))
                     self.d = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
                     if self.P1 == []:
-                        self.P1 = [self.new_marker_1[1]]
+                        self.P1 = [self.new_marker_1[0]]
                         
                     self.P1.append((float(endiameso.find_destination().split(",")[0]), float(endiameso.find_destination().split(",")[1])))
                     self.l = [sum(self.l) - float(speed)*float(dt)]

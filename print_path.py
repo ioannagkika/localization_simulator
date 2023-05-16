@@ -10,6 +10,7 @@ from tkintermapview.canvas_position_marker import CanvasPositionMarker
 from set_path import wanted_marker
 from to_broker import messages
 import sys
+import time
 
 customtkinter.set_default_color_theme("blue")
 
@@ -86,7 +87,7 @@ class App(customtkinter.CTk):
 
         self.visual_button = customtkinter.CTkCheckBox(master=self.frame_left, 
                                                   text = "visual",
-                                                  command=self.add_marker_event,
+                                                  command=self.hi,
                                                   variable=self.var1, onvalue=1, offvalue=0)
         self.visual_button.grid(pady=(10, 0), padx=(0, 0), row=9, column=0)
         self.time_visual = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff")
@@ -94,7 +95,7 @@ class App(customtkinter.CTk):
 
         self.inertio_button = customtkinter.CTkCheckBox(master=self.frame_left, 
                                                   text="inertio",
-                                                  command=self.add_marker_event,
+                                                  command=self.hi,
                                                   variable=self.var2, onvalue=1, offvalue=0)
         self.inertio_button.grid(pady=(10, 0), padx=(0, 0), row=10, column=0)
         self.time_inertio = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff")
@@ -102,7 +103,7 @@ class App(customtkinter.CTk):
 
         self.galileo_button = customtkinter.CTkCheckBox(master=self.frame_left, 
                                                   text="galileo",
-                                                  command=self.add_marker_event,
+                                                  command=self.hi,
                                                   variable=self.var3, onvalue=1, offvalue=0)
         self.galileo_button.grid(pady=(10, 0), padx=(0, 0), row=11, column=0)
         self.time_galileo = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff")
@@ -168,30 +169,30 @@ class App(customtkinter.CTk):
         #self.new_marker_1.append(new_marker.position)
         self.markers.append(new_marker)
 
-        if (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 0):
-            #self.visual_marker = wanted_marker()
-            print("visual")
-            self.visual_marker.new_marker_1.append(new_marker.position)
-            self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
-
-        elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 0):
-            #self.inertio_marker = wanted_marker()
-            print("inertio")
-            self.inertio_marker.new_marker_1.append(new_marker.position)
-            self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
-
-        elif (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 1):
-            #self.galileo_marker = wanted_marker()
-            print("galileo")
-            self.galileo_marker.new_marker_1.append(new_marker.position)
-            self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
-
-        elif (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 0):
+        if (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 0):
             tkinter.messagebox.showerror(title=None, message="No tool selected. Please restart.")
             #sys.exit("No tool selected")
             # self.clear_marker_event()
             # self.clear_path_event()
             assert ((self.var1.get() == 1) or (self.var2.get() == 1) or (self.var3.get() == 1)), "No tool selected"
+
+        elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 1):
+            #self.visual_marker = wanted_marker()
+            print("visual")
+            # if self.visual_marker.new_marker_1[1] == (0,0):
+            #     self.visual_marker.new_marker_1.pop(1)
+            self.visual_marker.new_marker_1.append(new_marker.position)
+            self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
+            #self.inertio_marker = wanted_marker()
+            # if self.inertio_marker.new_marker_1[1] == (0,0):
+            #     self.inertio_marker.new_marker_1.pop(1)
+            print("inertio")
+            self.inertio_marker.new_marker_1.append(new_marker.position)
+            self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
+            #self.galileo_marker = wanted_marker()
+            print("galileo")          
+            self.galileo_marker.new_marker_1.append(new_marker.position)
+            self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())    
 
         elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 0):
             #self.visual_marker = wanted_marker()
@@ -221,24 +222,27 @@ class App(customtkinter.CTk):
             #self.galileo_marker = wanted_marker()
             print("galileo")
             self.galileo_marker.new_marker_1.append(new_marker.position)
-            self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
+            self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())    
 
-        elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 1):
+
+        elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 0):
             #self.visual_marker = wanted_marker()
             print("visual")
             self.visual_marker.new_marker_1.append(new_marker.position)
+            print(new_marker.position)
             self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
+
+        elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 0):
             #self.inertio_marker = wanted_marker()
             print("inertio")
             self.inertio_marker.new_marker_1.append(new_marker.position)
             self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
+
+        elif (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 1):
             #self.galileo_marker = wanted_marker()
             print("galileo")
             self.galileo_marker.new_marker_1.append(new_marker.position)
-            self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())        
-
-
-        
+            self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
         
 
 
@@ -303,6 +307,9 @@ class App(customtkinter.CTk):
     def start(self):
         #self.wait_click()
         self.mainloop()
+    
+    def hi(self):
+        pass
 
 
 if __name__ == "__main__":
