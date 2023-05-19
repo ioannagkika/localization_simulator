@@ -147,12 +147,12 @@ class messages():
     #     # Disconnect from the MQTT broker
     #     client.disconnect()
 
-    def threads_visual(self, visual_latitude, visual_longitude, visual_timediff):
+    def threads_visual(self, visual_latitude, visual_longitude, visual_timediff, sourceid, brokerip):
         mqtt_visual = []
         mess_visual = []
         date_visual = self.dateandtime
         for i in range(len(visual_latitude)):
-            mqtt_visual.append(messages(ToolID = 'LOC-SELF', lat = visual_latitude[i], long = visual_longitude[i],  dateandtime = date_visual))
+            mqtt_visual.append(messages(ToolID = 'LOC-SELF', lat = visual_latitude[i], long = visual_longitude[i],  dateandtime = date_visual, sourceid = sourceid, brokerip=brokerip))
             mess_visual.append([(mqtt_visual[i].create_json())])
             date_visual = date_visual + timedelta(seconds = visual_timediff)
             # threads_visual = []
@@ -169,12 +169,12 @@ class messages():
 
 ########################################################################################
 
-    def threads_inertio(self, inertio_latitude, inertio_longitude, inertio_timediff):
+    def threads_inertio(self, inertio_latitude, inertio_longitude, inertio_timediff, sourceid, brokerip):
         mqtt_inertio = []
         mess_inertio = []
         date_inertio = self.dateandtime
         for i in range(len(inertio_latitude)):
-            mqtt_inertio.append(messages(ToolID = 'LOC-IBL', lat = inertio_latitude[i], long = inertio_longitude[i],  dateandtime = date_inertio))
+            mqtt_inertio.append(messages(ToolID = 'LOC-IBL', lat = inertio_latitude[i], long = inertio_longitude[i],  dateandtime = date_inertio, sourceid=sourceid, brokerip = brokerip))
             mess_inertio.append([(mqtt_inertio[i].create_json())])
             date_inertio = date_inertio + timedelta(seconds = inertio_timediff)
             # threads_inertio = []
@@ -189,12 +189,12 @@ class messages():
         #t_inertio.start()
 ########################################################################################
 
-    def threads_galileo(self, galileo_latitude, galileo_longitude, galileo_timediff):
+    def threads_galileo(self, galileo_latitude, galileo_longitude, galileo_timediff, sourceid):
         mqtt_galileo = []
         mess_galileo = []
         date_galileo = self.dateandtime
         for i in range(len(galileo_latitude)):
-            mqtt_galileo.append(messages(ToolID = 'LOC-GLT', lat = galileo_latitude[i], long = galileo_longitude[i],  dateandtime = date_galileo))
+            mqtt_galileo.append(messages(ToolID = 'LOC-GLT', lat = galileo_latitude[i], long = galileo_longitude[i],  dateandtime = date_galileo, sourceid=sourceid, brokerip = brokerip))
             mess_galileo.append([(mqtt_galileo[i].create_json())])
             date_galileo = date_galileo + timedelta(seconds = galileo_timediff)
             # threads_galileo = []
@@ -224,7 +224,6 @@ class messages():
 
     def publish_messages_with_delay(self, topic, message, delay):
         for index, message in enumerate(message):
-            print(index, message)
             threading.Timer(index * delay, self.publish_message, args=(topic, message)).start()
 
     # Publish messages with delays using multiple timers

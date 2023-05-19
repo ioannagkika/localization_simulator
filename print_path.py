@@ -56,8 +56,8 @@ class App(customtkinter.CTk):
         # self.datetime_button.grid(pady=(10, 0), padx=(5, 5), row=1, column=0)
 
 
-        self.fr_id_button = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="FR ID")
-        self.fr_id_button.grid(pady=(10, 0), padx=(5, 5), row=2, column=0, sticky = "n")  
+        self.source_id_button = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="source ID")
+        self.source_id_button.grid(pady=(10, 0), padx=(5, 5), row=2, column=0, sticky = "n")  
 
         # self.clear = customtkinter.CTkButton(master=self.frame_left,
         #                                         text="Clear Markers",
@@ -300,72 +300,127 @@ class App(customtkinter.CTk):
             self.map_widget.set_tile_server("http://a.tile.stamen.com/terrain/{z}/{x}/{y}.png",)     
 
     def send_message(self):
-        broker_messages = messages()
+        broker_messages = messages(brokerip = self.broker_button.get(), sourceid=self.source_id_button.get())
 
         while True:
 
             if (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 1):
                 print("visual")
-                vis = broker_messages.threads_visual(visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
-                    visual_timediff= float(self.time_visual.get()))
+                vis = broker_messages.threads_visual(
+                    visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], 
+                    visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
+                    visual_timediff= float(self.time_visual.get()), 
+                    brokerip = self.broker_button.get(), 
+                    sourceid=self.source_id_button.get())
                 print("inertio")
-                iner = broker_messages.threads_inertio(inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
-                    inertio_timediff=float(self.time_inertio.get()))               
+                iner = broker_messages.threads_inertio(
+                    inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_timediff=float(self.time_inertio.get()),
+                    brokerip = self.broker_button.get(), 
+                    sourceid=self.source_id_button.get())               
                 print("galileo")
-                gali = broker_messages.threads_galileo(galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
-                    galileo_timediff=float(self.time_galileo.get()))      
+                gali = broker_messages.threads_galileo(
+                    galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_timediff=float(self.time_galileo.get()),
+                    brokerip = self.broker_button.get(), 
+                    sourceid=self.source_id_button.get())  
+                   
                 broker_messages.otinanai(messages = [vis, iner, gali])
                 break
 
             elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 0):
                 print("visual")
-                vis = broker_messages.threads_visual(visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
-                    visual_timediff= float(self.time_visual.get()))                 
+                vis = broker_messages.threads_visual(
+                    visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], 
+                    visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
+                    visual_timediff= float(self.time_visual.get()), 
+                    brokerip = self.broker_button.get(), 
+                    sourceid=self.source_id_button.get())                
                 print("inertio")
-                iner = broker_messages.threads_inertio(inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
-                    inertio_timediff=float(self.time_inertio.get()))
+                iner = broker_messages.threads_inertio(
+                    inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_timediff=float(self.time_inertio.get()),
+                    brokerip = self.broker_button.get(), 
+                    sourceid=self.source_id_button.get()) 
+                
                 broker_messages.otinanai(messages = [vis, iner])
                 break
 
             elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 1):
                 print("visual")
-                vis = broker_messages.threads_visual(visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
-                    visual_timediff= float(self.time_visual.get()))                 
+                vis = broker_messages.threads_visual(
+                    visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], 
+                    visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
+                    visual_timediff= float(self.time_visual.get()), 
+                    brokerip = self.broker_button.get(), 
+                    sourceid=self.source_id_button.get())                
                 print("galileo")
-                gali = broker_messages.threads_galileo(galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
-                    galileo_timediff=float(self.time_galileo.get()))
+                gali = broker_messages.threads_galileo(
+                    galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_timediff=float(self.time_galileo.get()),
+                    brokerip = self.broker_button.get(), 
+                    sourceid=self.source_id_button.get()) 
+                
                 broker_messages.otinanai(messages = [vis, gali])                 
                 break
 
             elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 1):
                 print("inertio")
-                iner = broker_messages.threads_inertio(inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
-                    inertio_timediff=float(self.time_inertio.get()))             
+                iner = broker_messages.threads_inertio(
+                    inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_timediff=float(self.time_inertio.get()),
+                    brokerip = self.broker_button.get(), 
+                    sourceid=self.source_id_button.get())           
                 print("galileo")
-                gali = broker_messages.threads_galileo(galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
-                    galileo_timediff=float(self.time_galileo.get()))
+                gali = broker_messages.threads_galileo(
+                    galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_timediff=float(self.time_galileo.get()),
+                    brokerip = self.broker_button.get(), 
+                    sourceid=self.source_id_button.get()) 
+                
                 broker_messages.otinanai(messages = [iner, gali])                
                 break  
 
 
             elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 0):
                 print("visual")
-                vis = broker_messages.threads_visual(visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
-                    visual_timediff= float(self.time_visual.get()))
+                vis = broker_messages.threads_visual(
+                    visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], 
+                    visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
+                    visual_timediff= float(self.time_visual.get()), 
+                    brokerip = self.broker_button.get(), 
+                    sourceid=self.source_id_button.get())
+                
                 broker_messages.otinanai(messages = [vis])              
                 break
 
             elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 0):
                 print("inertio")
-                iner = broker_messages.threads_inertio(inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
-                    inertio_timediff=float(self.time_inertio.get()))
+                iner = broker_messages.threads_inertio(
+                    inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_timediff=float(self.time_inertio.get()),
+                    brokerip = self.broker_button.get(), 
+                    sourceid=self.source_id_button.get()) 
+                
                 broker_messages.otinanai(messages = [iner])               
                 break
 
             elif (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 1):
                 print("galileo")
-                gali = broker_messages.threads_galileo(galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
-                    galileo_timediff=float(self.time_galileo.get()))
+                gali = broker_messages.threads_galileo(
+                    galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_timediff=float(self.time_galileo.get()),
+                    brokerip = self.broker_button.get(), 
+                    sourceid=self.source_id_button.get()) 
+                
                 broker_messages.otinanai(messages = [gali])            
                 break
  
