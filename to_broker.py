@@ -107,136 +107,155 @@ class messages():
         json_infoprioPayload['toolData'] =  [json_tooldata]    
         self.json_msg['infoprioPayload'] = json_infoprioPayload
         self.json_msg = json.dumps(self.json_msg) 
-        return self.json_msg, self.dateandtime
+        return self.json_msg #, self.dateandtime
 
 
-    #mqtt_qos = 0
-    def publish(self):
-        msg_count = 0
-        #while True:
-        #for i in range(2):
-        time.sleep(10)
-        msg = f"messages: {msg_count}"
-        result = self.client.publish(self.PublishingTopic, self.create_json(), qos = 0)
-        # result: [0, 1]
-        status = result[0]
-        if status == 0:
-            print(f"Send `{msg}` to topic `{self.PublishingTopic}`")
-        else:
-            print(f"Failed to send message to topic {self.PublishingTopic}")
-        msg_count += 1
+    # #mqtt_qos = 0
+    # def publish(self):
+    #     msg_count = 0
+    #     #while True:
+    #     #for i in range(2):
+    #     time.sleep(10)
+    #     msg = f"messages: {msg_count}"
+    #     result = self.client.publish(self.PublishingTopic, self.create_json(), qos = 0)
+    #     # result: [0, 1]
+    #     status = result[0]
+    #     if status == 0:
+    #         print(f"Send `{msg}` to topic `{self.PublishingTopic}`")
+    #     else:
+    #         print(f"Failed to send message to topic {self.PublishingTopic}")
+    #     msg_count += 1
 
 
-    def run(self):
-        #client = mqtt.Client(self.ToolID)
-        self.client.connect(self.brokerip)
-        #self.client.loop_start()
-        self.publish()
-        #self.client.loop_stop()
+    # def run(self):
+    #     #client = mqtt.Client(self.ToolID)
+    #     self.client.connect(self.brokerip)
+    #     #self.client.loop_start()
+    #     self.publish()
+    #     #self.client.loop_stop()
 
-    def publish_message(self):
+    # def publish_message(self):
+    #     # Create a new MQTT client
+    #     client = mqtt.Client(self.ToolID)
+
+    #     # Connect to the MQTT broker
+    #     client.connect('192.168.100.12')
+
+    #     # Publish the message to the specified topic
+    #     client.publish(self.PublishingTopic, self.create_json()[0])
+
+    #     # Disconnect from the MQTT broker
+    #     client.disconnect()
+
+    def threads_visual(self, visual_latitude, visual_longitude, visual_timediff):
+        mqtt_visual = []
+        mess_visual = []
+        date_visual = self.dateandtime
+        for i in range(len(visual_latitude)):
+            mqtt_visual.append(messages(ToolID = 'LOC-SELF', lat = visual_latitude[i], long = visual_longitude[i],  dateandtime = date_visual))
+            mess_visual.append([(mqtt_visual[i].create_json())])
+            date_visual = date_visual + timedelta(seconds = visual_timediff)
+            # threads_visual = []
+        mess_visual = (mqtt_visual[0].PublishingTopic, mess_visual, visual_timediff)
+        # for i in range((len(visual_latitude))):
+        #     for topic, message in mess_visual[i]:
+        #         t_visual = threading.Thread(target=mqtt_visual[i].publish_message(), args=(topic, message))
+        #         time.sleep(visual_timediff)
+        #         # threads_visual.append(t_visual)
+        return mess_visual
+        #t_visual.start()
+        
+        
+
+########################################################################################
+
+    def threads_inertio(self, inertio_latitude, inertio_longitude, inertio_timediff):
+        mqtt_inertio = []
+        mess_inertio = []
+        date_inertio = self.dateandtime
+        for i in range(len(inertio_latitude)):
+            mqtt_inertio.append(messages(ToolID = 'LOC-IBL', lat = inertio_latitude[i], long = inertio_longitude[i],  dateandtime = date_inertio))
+            mess_inertio.append([(mqtt_inertio[i].create_json())])
+            date_inertio = date_inertio + timedelta(seconds = inertio_timediff)
+            # threads_inertio = []
+        mess_inertio = (mqtt_inertio[0].PublishingTopic, mess_inertio, inertio_timediff)
+        # for i in range((len(inertio_latitude))):
+        #     for topic, message in mess_inertio[i]:
+        #         t_inertio = threading.Thread(target=mqtt_inertio[i].publish_message(), args=(topic, message))
+        #         time.sleep(inertio_timediff)
+        #         # threads_inertio.append(t_inertio)
+        return mess_inertio
+        #t_visual.start()
+        #t_inertio.start()
+########################################################################################
+
+    def threads_galileo(self, galileo_latitude, galileo_longitude, galileo_timediff):
+        mqtt_galileo = []
+        mess_galileo = []
+        date_galileo = self.dateandtime
+        for i in range(len(galileo_latitude)):
+            mqtt_galileo.append(messages(ToolID = 'LOC-GLT', lat = galileo_latitude[i], long = galileo_longitude[i],  dateandtime = date_galileo))
+            mess_galileo.append([(mqtt_galileo[i].create_json())])
+            date_galileo = date_galileo + timedelta(seconds = galileo_timediff)
+            # threads_galileo = []
+        mess_galileo = (mqtt_galileo[0].PublishingTopic, mess_galileo, galileo_timediff)
+        # for i in range((len(galileo_latitude))):
+        #     for topic, message in mess_galileo[i]:
+        #         t_galileo = threading.Thread(target=mqtt_galileo[i].publish_message(), args=(topic, message))
+        #         time.sleep(galileo_timediff)
+        #         # threads_galileo.append(t_galileo)
+        return mess_galileo
+        #t_galileo.start()
+
+  
+
+    def publish_message(self, topic, message):
         # Create a new MQTT client
         client = mqtt.Client(self.ToolID)
 
         # Connect to the MQTT broker
-        client.connect('192.168.100.12')
+        client.connect(self.brokerip)
 
         # Publish the message to the specified topic
-        client.publish(self.PublishingTopic, self.create_json()[0])
+        client.publish(topic, message[0])
 
         # Disconnect from the MQTT broker
         client.disconnect()
 
-    def threads(self, visual_latitude, visual_longitude, inertio_latitude, inertio_longitude, galileo_latitude, galileo_longitude, visual_timediff, inertio_timediff, galileo_timediff):
-        #lat = [0,1,2]
-        #long = [0,1,2]
-        mqtt_visual = []
-        mqtt_inertio = []
-        mqtt_galileo = []
-        mess_visual = []
-        mess_inertio = []
-        mess_galileo = []
-        date_visual = self.dateandtime
-        date_inertio = self.dateandtime
-        date_galileo = self.dateandtime
-        #dateandtime = datetime(2023, 5, 11, 12, 36, 57, 643401)
-        # d = datetime(2023, 5, 11, 12, 36, 57, 643401)
-        # t_visual = timedelta(seconds = 10)
-        # t_inertio = timedelta(seconds = 20)
-        # t_galileo = timedelta(seconds = 30)
-        for i in range(len(visual_latitude)):
-        # timediff = 0
-        # dateandtime = dateandtime + timedelta(hours = timediff)
+    def publish_messages_with_delay(self, topic, message, delay):
+        for index, message in enumerate(message):
+            print(index, message)
+            threading.Timer(index * delay, self.publish_message, args=(topic, message)).start()
 
-            # d_galileo = d + t_galileo
-            mqtt_visual.append(messages(ToolID = 'LOC-SELF', lat = visual_latitude[i], long = visual_longitude[i],  dateandtime = date_visual))
-            mess_visual.append([(mqtt_visual[i].PublishingTopic, mqtt_visual[i].create_json())])
-            #self.dateandtime = self.dateandtime + timedelta(seconds = self.timediff)
-            date_visual = date_visual + timedelta(seconds = visual_timediff)
+    # Publish messages with delays using multiple timers
+    def otinanai(self, messages):
+        timers = []
+        #messages = []
+        #messages = [self.threads_visual([1,2,3],[1,2,3],3), self.threads_inertio([1,2,3],[1,2,3],3), self.threads_galileo([1,2,3],[1,2,3],3)]
+        for topic, message_list, delay in messages:
+            timer = threading.Timer(0, self.publish_messages_with_delay, args=(topic, message_list, delay))
+            timers.append(timer)
+            timer.start()
 
-        for i in range(len(inertio_latitude)):    
-            mqtt_inertio.append(messages(ToolID = 'LOC-IBL', lat = inertio_latitude[i], long = inertio_longitude[i],  dateandtime = date_inertio))
-            mess_inertio.append([(mqtt_inertio[i].PublishingTopic, mqtt_inertio[i].create_json())])
-            #self.dateandtime = self.dateandtime + timedelta(seconds = self.timediff)
-            date_inertio = date_inertio + timedelta(seconds = inertio_timediff)
+        # Wait for all timers to complete
+        for timer in timers:
+            timer.join()
 
-        for i in range(len(galileo_latitude)): 
-            mqtt_galileo.append(messages(ToolID = 'LOC-GLT', lat = galileo_latitude[i], long = galileo_longitude[i],  dateandtime = date_galileo))
-            mess_galileo.append([(mqtt_galileo[i].PublishingTopic, mqtt_galileo[i].create_json())])
-            date_galileo  = date_galileo + timedelta(seconds = galileo_timediff)
-            #self.dateandtime = self.dateandtime + timedelta(seconds = self.timediff)
+        # All messages published
+        print("All messages published.")
+
+# broker_messages = messages()
+# broker_messages.otinanai()
 
 
 
-        # Define your messages and topics
-            # mess = [
-            #     (mqtt_visual[i].PublishingTopic, mqtt_visual[i].create_json()),
-            #     (mqtt_inertio[i].PublishingTopic, mqtt_inertio[i].create_json()),
-            #     (mqtt_galileo[i].PublishingTopic, mqtt_galileo[i].create_json())
-            # ]
-            
-            
-            
-        #mqttc.run()
-        #mqttc1.run()
-
-        # Publish messages using multiple threads
-            threads_visual = []
-            threads_inertio = []
-            threads_galileo = []
-            
-        for i in range((len(visual_latitude))):
-            for topic, message in mess_visual[i]:
-                t_visual = threading.Thread(target=mqtt_visual[i].publish_message(), args=(topic, message))
-                #time.sleep(10)
-                threads_visual.append(t_visual)
-
-        for i in range(len(inertio_latitude)):
-            for topic, message in mess_inertio[i]:
-                t_inertio = threading.Thread(target=mqtt_inertio[i].publish_message(), args=(topic, message))
-                #time.sleep(10)
-                threads_inertio.append(t_inertio)
-
-        for i in range(len(galileo_latitude)):
-            for topic, message in mess_galileo[i]:
-                t_galileo = threading.Thread(target=mqtt_galileo[i].publish_message(), args=(topic, message))
-                #time.sleep(10)
-                threads_galileo.append(t_galileo)
-                
-
-                
-                
-                
-        t_visual.start()
-        t_inertio.start()
-        t_galileo.start()
 
             # Wait for all threads to complete
             # for t in threads:
             #     t.join()
 
             # All messages published
-        print("All messages published.")
+        #print("All messages published.")
         #return self.timediff
 
 

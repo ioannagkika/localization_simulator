@@ -52,17 +52,17 @@ class App(customtkinter.CTk):
         self.broker_button = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="Broker IP")
         self.broker_button.grid(pady=(10, 0), padx=(5, 5), row=0, column=0)
 
-        self.datetime_button = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="datetime")
-        self.datetime_button.grid(pady=(10, 0), padx=(5, 5), row=1, column=0)
+        # self.datetime_button = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="datetime")
+        # self.datetime_button.grid(pady=(10, 0), padx=(5, 5), row=1, column=0)
 
 
         self.fr_id_button = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="FR ID")
         self.fr_id_button.grid(pady=(10, 0), padx=(5, 5), row=2, column=0, sticky = "n")  
 
-        self.clear = customtkinter.CTkButton(master=self.frame_left,
-                                                text="Clear Markers",
-                                                command=self.clear_marker_event, fg_color="red", hover_color="pink")
-        self.clear.grid(pady=(20, 0), padx=(5, 5), row=3, column=0)
+        # self.clear = customtkinter.CTkButton(master=self.frame_left,
+        #                                         text="Clear Markers",
+        #                                         command=self.clear_marker_event, fg_color="red", hover_color="pink")
+        # self.clear.grid(pady=(20, 0), padx=(5, 5), row=3, column=0)
 
         self.send = customtkinter.CTkButton(master=self.frame_left, text="send to broker", command = self.send_message, fg_color="green", hover_color="light green")
         self.send.grid(pady=(10, 0), padx=(5, 5), row=4, column=0)
@@ -168,81 +168,89 @@ class App(customtkinter.CTk):
         new_marker = self.map_widget.set_marker(coords[0], coords[1], text = "("+ str(coords[0]) +","+ str(coords[1])+")", font = "Tahoma 9", text_color = '#e61212')#, icon = self.set_icon())
         #self.new_marker_1.append(new_marker.position)
         self.markers.append(new_marker)
+        while True:
+            if (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 0):
+                tkinter.messagebox.showerror(title=None, message="No tool selected. Please restart.")
+                #sys.exit("No tool selected")
+                # self.clear_marker_event()
+                # self.clear_path_event()
+                assert ((self.var1.get() == 1) or (self.var2.get() == 1) or (self.var3.get() == 1)), "No tool selected"
+                break
 
-        if (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 0):
-            tkinter.messagebox.showerror(title=None, message="No tool selected. Please restart.")
-            #sys.exit("No tool selected")
-            # self.clear_marker_event()
-            # self.clear_path_event()
-            assert ((self.var1.get() == 1) or (self.var2.get() == 1) or (self.var3.get() == 1)), "No tool selected"
+            elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 1):
+                #self.visual_marker = wanted_marker()
+                print("visual")
+                # if self.visual_marker.new_marker_1[1] == (0,0):
+                #     self.visual_marker.new_marker_1.pop(1)
+                self.visual_marker.new_marker_1.append(new_marker.position)
+                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
+                #self.inertio_marker = wanted_marker()
+                # if self.inertio_marker.new_marker_1[1] == (0,0):
+                #     self.inertio_marker.new_marker_1.pop(1)
+                print("inertio")
+                self.inertio_marker.new_marker_1.append(new_marker.position)
+                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
+                #self.galileo_marker = wanted_marker()
+                print("galileo")          
+                self.galileo_marker.new_marker_1.append(new_marker.position)
+                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
+                break
 
-        elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 1):
-            #self.visual_marker = wanted_marker()
-            print("visual")
-            # if self.visual_marker.new_marker_1[1] == (0,0):
-            #     self.visual_marker.new_marker_1.pop(1)
-            self.visual_marker.new_marker_1.append(new_marker.position)
-            self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
-            #self.inertio_marker = wanted_marker()
-            # if self.inertio_marker.new_marker_1[1] == (0,0):
-            #     self.inertio_marker.new_marker_1.pop(1)
-            print("inertio")
-            self.inertio_marker.new_marker_1.append(new_marker.position)
-            self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
-            #self.galileo_marker = wanted_marker()
-            print("galileo")          
-            self.galileo_marker.new_marker_1.append(new_marker.position)
-            self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())    
+            elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 0):
+                #self.visual_marker = wanted_marker()
+                print("visual")
+                self.visual_marker.new_marker_1.append(new_marker.position)
+                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
+                #self.inertio_marker = wanted_marker()
+                print("inertio")
+                self.inertio_marker.new_marker_1.append(new_marker.position)
+                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
+                break
 
-        elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 0):
-            #self.visual_marker = wanted_marker()
-            print("visual")
-            self.visual_marker.new_marker_1.append(new_marker.position)
-            self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
-            #self.inertio_marker = wanted_marker()
-            print("inertio")
-            self.inertio_marker.new_marker_1.append(new_marker.position)
-            self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
+            elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 1):
+                #self.visual_marker = wanted_marker()
+                print("visual")
+                self.visual_marker.new_marker_1.append(new_marker.position)
+                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
+                #self.galileo_marker = wanted_marker()
+                print("galileo")
+                self.galileo_marker.new_marker_1.append(new_marker.position)
+                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
+                break
 
-        elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 1):
-            #self.visual_marker = wanted_marker()
-            print("visual")
-            self.visual_marker.new_marker_1.append(new_marker.position)
-            self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
-            #self.galileo_marker = wanted_marker()
-            print("galileo")
-            self.galileo_marker.new_marker_1.append(new_marker.position)
-            self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
-
-        elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 1):
-            #self.inertio_marker = wanted_marker()
-            print("inertio")
-            self.inertio_marker.new_marker_1.append(new_marker.position)
-            self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
-            #self.galileo_marker = wanted_marker()
-            print("galileo")
-            self.galileo_marker.new_marker_1.append(new_marker.position)
-            self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())    
+            elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 1):
+                #self.inertio_marker = wanted_marker()
+                print("inertio")
+                self.inertio_marker.new_marker_1.append(new_marker.position)
+                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
+                #self.galileo_marker = wanted_marker()
+                print("galileo")
+                self.galileo_marker.new_marker_1.append(new_marker.position)
+                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
+                break  
 
 
-        elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 0):
-            #self.visual_marker = wanted_marker()
-            print("visual")
-            self.visual_marker.new_marker_1.append(new_marker.position)
-            print(new_marker.position)
-            self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
+            elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 0):
+                #self.visual_marker = wanted_marker()
+                print("visual")
+                self.visual_marker.new_marker_1.append(new_marker.position)
+                print(new_marker.position)
+                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
+                break
 
-        elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 0):
-            #self.inertio_marker = wanted_marker()
-            print("inertio")
-            self.inertio_marker.new_marker_1.append(new_marker.position)
-            self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
+            elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 0):
+                #self.inertio_marker = wanted_marker()
+                print("inertio")
+                self.inertio_marker.new_marker_1.append(new_marker.position)
+                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
+                break
 
-        elif (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 1):
-            #self.galileo_marker = wanted_marker()
-            print("galileo")
-            self.galileo_marker.new_marker_1.append(new_marker.position)
-            self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
+            elif (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 1):
+                #self.galileo_marker = wanted_marker()
+                print("galileo")
+                self.galileo_marker.new_marker_1.append(new_marker.position)
+                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
+                break
         
 
 
@@ -293,12 +301,74 @@ class App(customtkinter.CTk):
 
     def send_message(self):
         broker_messages = messages()
-        broker_messages.threads(visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
-                                inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
-                                galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
-                                visual_timediff= float(self.time_visual.get()), 
-                                inertio_timediff=float(self.time_inertio.get()), 
-                                galileo_timediff=float(self.time_galileo.get()))   
+
+        while True:
+
+            if (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 1):
+                print("visual")
+                vis = broker_messages.threads_visual(visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
+                    visual_timediff= float(self.time_visual.get()))
+                print("inertio")
+                iner = broker_messages.threads_inertio(inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_timediff=float(self.time_inertio.get()))               
+                print("galileo")
+                gali = broker_messages.threads_galileo(galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_timediff=float(self.time_galileo.get()))      
+                broker_messages.otinanai(messages = [vis, iner, gali])
+                break
+
+            elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 0):
+                print("visual")
+                vis = broker_messages.threads_visual(visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
+                    visual_timediff= float(self.time_visual.get()))                 
+                print("inertio")
+                iner = broker_messages.threads_inertio(inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_timediff=float(self.time_inertio.get()))
+                broker_messages.otinanai(messages = [vis, iner])
+                break
+
+            elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 1):
+                print("visual")
+                vis = broker_messages.threads_visual(visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
+                    visual_timediff= float(self.time_visual.get()))                 
+                print("galileo")
+                gali = broker_messages.threads_galileo(galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_timediff=float(self.time_galileo.get()))
+                broker_messages.otinanai(messages = [vis, gali])                 
+                break
+
+            elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 1):
+                print("inertio")
+                iner = broker_messages.threads_inertio(inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_timediff=float(self.time_inertio.get()))             
+                print("galileo")
+                gali = broker_messages.threads_galileo(galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_timediff=float(self.time_galileo.get()))
+                broker_messages.otinanai(messages = [iner, gali])                
+                break  
+
+
+            elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 0):
+                print("visual")
+                vis = broker_messages.threads_visual(visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
+                    visual_timediff= float(self.time_visual.get()))
+                broker_messages.otinanai(messages = [vis])              
+                break
+
+            elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 0):
+                print("inertio")
+                iner = broker_messages.threads_inertio(inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_timediff=float(self.time_inertio.get()))
+                broker_messages.otinanai(messages = [iner])               
+                break
+
+            elif (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 1):
+                print("galileo")
+                gali = broker_messages.threads_galileo(galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_timediff=float(self.time_galileo.get()))
+                broker_messages.otinanai(messages = [gali])            
+                break
+ 
 
     def on_closing(self, event=0):
         self.destroy()
