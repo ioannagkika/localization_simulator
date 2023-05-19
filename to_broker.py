@@ -7,7 +7,9 @@ import threading
 
 class messages():
 
-    def __init__(self, lat = 1, long = 1, dateandtime = datetime(2023, 5, 11, 12, 36, 57, 643401), PublishingTopic= "hi", json_msg = {}, brokerip = '192.168.100.12' , frid = 'FR003', ToolID = 'LOC-SELF', sourceid = "FR001#FR") -> None:
+    def __init__(self, lat = 1, long = 1, dateandtime = datetime(2023, 5, 11, 12, 36, 57, 643401), 
+                 PublishingTopic= "hi", json_msg = {}, brokerip = '192.168.100.12' , frid = 'FR003', ToolID = 'LOC-SELF', 
+                 sourceid = "FR001#FR", quality = None, quality_heading = None, outdoor = None, mounting = "helmet") -> None:
         #self.tool = tool
         self.brokerip = brokerip
         self.frid = frid
@@ -20,6 +22,11 @@ class messages():
         self.lat = lat
         self.long = long
         self.dateandtime = dateandtime
+        self.quality = quality
+        self.quality_heading = quality_heading
+        self.outdoor = outdoor
+        self.mounting = mounting
+    
 
     def create_json(self):
        # brokerip= '192.168.100.12' 
@@ -84,10 +91,10 @@ class messages():
         json_tooldata['longitude'] = self.long
         json_tooldata['heading'] = 0
         json_tooldata['altitude'] = 0
-        json_tooldata['quality'] = 0
-        json_tooldata['qualityHeading'] = 0
-        json_tooldata['outdoor'] = True
-        json_tooldata['mounting'] = "helmet"
+        json_tooldata['quality'] = self.quality
+        json_tooldata['qualityHeading'] = self.quality_heading
+        json_tooldata['outdoor'] = self.outdoor
+        json_tooldata['mounting'] = self.mounting
         
 
 
@@ -152,7 +159,8 @@ class messages():
         mess_visual = []
         date_visual = self.dateandtime
         for i in range(len(visual_latitude)):
-            mqtt_visual.append(messages(ToolID = 'LOC-SELF', lat = visual_latitude[i], long = visual_longitude[i],  dateandtime = date_visual, sourceid = sourceid, brokerip=brokerip))
+            mqtt_visual.append(messages(ToolID = 'LOC-SELF', lat = visual_latitude[i], long = visual_longitude[i],  
+                                        dateandtime = date_visual, sourceid = sourceid, brokerip=brokerip))
             mess_visual.append([(mqtt_visual[i].create_json())])
             date_visual = date_visual + timedelta(seconds = visual_timediff)
             # threads_visual = []
@@ -174,7 +182,9 @@ class messages():
         mess_inertio = []
         date_inertio = self.dateandtime
         for i in range(len(inertio_latitude)):
-            mqtt_inertio.append(messages(ToolID = 'LOC-IBL', lat = inertio_latitude[i], long = inertio_longitude[i],  dateandtime = date_inertio, sourceid=sourceid, brokerip = brokerip))
+            mqtt_inertio.append(messages(ToolID = 'LOC-IBL', lat = inertio_latitude[i], long = inertio_longitude[i],  
+                                         dateandtime = date_inertio, sourceid=sourceid, brokerip = brokerip,
+                                         quality=1.23456, mounting=None))
             mess_inertio.append([(mqtt_inertio[i].create_json())])
             date_inertio = date_inertio + timedelta(seconds = inertio_timediff)
             # threads_inertio = []
@@ -189,12 +199,14 @@ class messages():
         #t_inertio.start()
 ########################################################################################
 
-    def threads_galileo(self, galileo_latitude, galileo_longitude, galileo_timediff, sourceid):
+    def threads_galileo(self, galileo_latitude, galileo_longitude, galileo_timediff, sourceid, brokerip):
         mqtt_galileo = []
         mess_galileo = []
         date_galileo = self.dateandtime
         for i in range(len(galileo_latitude)):
-            mqtt_galileo.append(messages(ToolID = 'LOC-GLT', lat = galileo_latitude[i], long = galileo_longitude[i],  dateandtime = date_galileo, sourceid=sourceid, brokerip = brokerip))
+            mqtt_galileo.append(messages(ToolID = 'LOC-GLT', lat = galileo_latitude[i], long = galileo_longitude[i],  
+                                         dateandtime = date_galileo, sourceid=sourceid, brokerip = brokerip,
+                                         quality=1.23456, quality_heading = 0, outdoor=True))
             mess_galileo.append([(mqtt_galileo[i].create_json())])
             date_galileo = date_galileo + timedelta(seconds = galileo_timediff)
             # threads_galileo = []
