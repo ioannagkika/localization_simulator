@@ -229,31 +229,39 @@ class messages():
         client.connect(self.brokerip)
 
         # Publish the message to the specified topic
-        client.publish(topic, message[0])
+        client.publish(topic, message[0], qos= 0)
 
         # Disconnect from the MQTT broker
         client.disconnect()
 
-    def publish_messages_with_delay(self, topic, message, delay):
-        for index, message in enumerate(message):
-            threading.Timer(index * delay, self.publish_message, args=(topic, message)).start()
+    def publish_messages_with_delay(self, topic, message_list, delay):
+            self.i = 0
+            for index in range(len(message_list)):
+                message = message_list[index]
+                threading.Timer(index * delay, self.publish_message, args=(topic, message)).start()
+                self.i+=1
+                #print(self.i)
+                # print(index)
+                print (self.i)
+            return self.i
 
     # Publish messages with delays using multiple timers
     def otinanai(self, messages):
-        timers = []
+        # timers = []
         #messages = []
         #messages = [self.threads_visual([1,2,3],[1,2,3],3), self.threads_inertio([1,2,3],[1,2,3],3), self.threads_galileo([1,2,3],[1,2,3],3)]
         for topic, message_list, delay in messages:
             timer = threading.Timer(0, self.publish_messages_with_delay, args=(topic, message_list, delay))
-            timers.append(timer)
+            # timers.append(timer)
             timer.start()
+            print(topic)
 
         # Wait for all timers to complete
-        for timer in timers:
-            timer.join()
+        # for timer in timers:
+        #     timer.join()
 
         # All messages published
-        print("All messages published.")
+
 
 # broker_messages = messages()
 # broker_messages.otinanai()
