@@ -4,6 +4,7 @@ import json
 from datetime import datetime, timedelta
 import time
 import threading
+import numpy as np
 
 class messages():
 
@@ -221,40 +222,53 @@ class messages():
 
   
 
-    def publish_message(self, topic, message):
-        # Create a new MQTT client
-        client = mqtt.Client(self.ToolID)
+    #def publish_message(self, topic, message):
+    #    # Create a new MQTT client
+    #    client = mqtt.Client(self.ToolID)
+    #
+    #    # Connect to the MQTT broker
+    #    client.connect(self.brokerip)
+    #
+    #    # Publish the message to the specified topic
+    #    client.publish(topic, message[0], qos= 0)
+    #
+    #    # Disconnect from the MQTT broker
+    #    client.disconnect()
 
-        # Connect to the MQTT broker
+    def publish_messages_with_delay(self, topic, message_list, delay, progress):
+        client = mqtt.Client(topic)
         client.connect(self.brokerip)
+    
+        for index in range(len(message_list)):
+            message = message_list[index][0]
+            progress[topic] = float(index+1) / len(message_list)
+            t_begin = datetime.now()
+            # Edo mporeis na antikatastiseis tin ora pou eixe me tin t_begin
+            client.publish(topic, message, qos= 0)
+            time.sleep(delay - (datetime.now()-t_begin).seconds)
 
-        # Publish the message to the specified topic
-        client.publish(topic, message[0], qos= 0)
-
-        # Disconnect from the MQTT broker
         client.disconnect()
-
-    def publish_messages_with_delay(self, topic, message_list, delay):
-            self.i = 0
-            for index in range(len(message_list)):
-                message = message_list[index]
-                threading.Timer(index * delay, self.publish_message, args=(topic, message)).start()
-                self.i+=1
-                #print(self.i)
-                # print(index)
-                print (self.i)
-            return self.i
 
     # Publish messages with delays using multiple timers
     def otinanai(self, messages):
-        # timers = []
-        #messages = []
-        #messages = [self.threads_visual([1,2,3],[1,2,3],3), self.threads_inertio([1,2,3],[1,2,3],3), self.threads_galileo([1,2,3],[1,2,3],3)]
+        print("Begun sending messages!")
+
+        progress = {}
+
         for topic, message_list, delay in messages:
-            timer = threading.Timer(0, self.publish_messages_with_delay, args=(topic, message_list, delay))
-            # timers.append(timer)
+            timer = threading.Timer(0, self.publish_messages_with_delay, args=(topic, message_list, delay, progress))
             timer.start()
-            print(topic)
+
+        self.min_progress = 0.0
+        while self.min_progress < 1.0:
+            progress_list = list(progress.values())
+            self.min_progress = np.min(progress_list) if len(progress_list) > 0 else 0
+            yield self.min_progress
+            #print(str(self.min_progress * 100) + "%")
+            # update to GUI element
+        print("All messages published!")
+
+
 
         # Wait for all timers to complete
         # for timer in timers:
