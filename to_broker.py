@@ -250,7 +250,7 @@ class messages():
         client.disconnect()
 
     # Publish messages with delays using multiple timers
-    def otinanai(self, messages):
+    def otinanai(self, messages, progress_button, windowclass):
         print("Begun sending messages!")
 
         progress = {}
@@ -259,11 +259,17 @@ class messages():
             timer = threading.Timer(0, self.publish_messages_with_delay, args=(topic, message_list, delay, progress))
             timer.start()
 
-        self.min_progress = 0.0
-        while self.min_progress < 1.0:
+        min_progress = 0.0
+        while min_progress < 1.0:
             progress_list = list(progress.values())
-            self.min_progress = np.min(progress_list) if len(progress_list) > 0 else 0
-            yield self.min_progress
+            min_progress = np.min(progress_list) if len(progress_list) > 0 else 0
+
+            progress_button.configure(text= str(int(min_progress * 100)) + "%")
+            windowclass.update()
+
+            #callback(min_progress)
+            # self.progress_button = customtkinter.CTkLabel(master=self.frame_left, width = 20, height = 20, text=broker_messages.min_progress)
+            # self.progress_button.grid(pady=(10, 0), padx=(5, 5), row=13, column=0)
             #print(str(self.min_progress * 100) + "%")
             # update to GUI element
         print("All messages published!")

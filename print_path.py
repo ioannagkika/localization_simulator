@@ -11,6 +11,7 @@ from set_path import wanted_marker
 from to_broker import messages
 import sys
 import time
+from datetime import datetime
 
 customtkinter.set_default_color_theme("blue")
 
@@ -90,7 +91,7 @@ class App(customtkinter.CTk):
                                                   command=self.hi,
                                                   variable=self.var1, onvalue=1, offvalue=0)
         self.visual_button.grid(pady=(10, 0), padx=(0, 0), row=9, column=0)
-        self.time_visual = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff")
+        self.time_visual = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff (s)")
         self.time_visual.grid(pady=(10, 0), padx=(10, 20), row=9, column=1)
 
         self.inertio_button = customtkinter.CTkCheckBox(master=self.frame_left, 
@@ -98,7 +99,7 @@ class App(customtkinter.CTk):
                                                   command=self.hi,
                                                   variable=self.var2, onvalue=1, offvalue=0)
         self.inertio_button.grid(pady=(10, 0), padx=(0, 0), row=10, column=0)
-        self.time_inertio = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff")
+        self.time_inertio = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff (s)")
         self.time_inertio.grid(pady=(10, 0), padx=(10, 20), row=10, column=1)
 
         self.galileo_button = customtkinter.CTkCheckBox(master=self.frame_left, 
@@ -106,10 +107,10 @@ class App(customtkinter.CTk):
                                                   command=self.hi,
                                                   variable=self.var3, onvalue=1, offvalue=0)
         self.galileo_button.grid(pady=(10, 0), padx=(0, 0), row=11, column=0)
-        self.time_galileo = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff")
+        self.time_galileo = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff (s)")
         self.time_galileo.grid(pady=(10, 0), padx=(10, 20), row=11, column=1)
 
-        self.speed = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="speed")
+        self.speed = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="speed (m/s)")
         self.speed.grid(pady=(10, 20), padx=(0, 0), row=12, column=0)
 
 
@@ -137,6 +138,7 @@ class App(customtkinter.CTk):
                                                 command=self.search_event)
         self.button_8.grid(row=0, column=1, sticky="w", padx=(12, 0), pady=12)
 
+
         # Set default values
         self.map_widget.set_address("Thessaloniki")
         self.map_option_menu.set("OpenStreetMap")
@@ -153,6 +155,9 @@ class App(customtkinter.CTk):
         self.map_widget.add_right_click_menu_command(label="Add Marker",
                                         command=self.add_marker_event,
                                         pass_coords=True)
+        self.progress_button = customtkinter.CTkLabel(master=self.frame_left, width = 20, height = 20, text="0%")
+        self.progress_button.grid(pady=(10, 0), padx=(5, 5), row=13, column=0)
+                                        
         self.visual_marker = wanted_marker()
         self.inertio_marker = wanted_marker()
         self.galileo_marker = wanted_marker()
@@ -254,33 +259,33 @@ class App(customtkinter.CTk):
         
 
 
-    def clear_marker_event(self):
-        # for i in range(len(self.new_marker_1)):
-        #     self.new_marker_1[i] = CanvasPositionMarker(position = self.new_marker_1[i], map_widget= "TkinterMapView")
-        for marker in self.markers:    
-            marker.delete()
-        # self.new_marker_1.clear()
-        self.markers = []
+    # def clear_marker_event(self):
+    #     # for i in range(len(self.new_marker_1)):
+    #     #     self.new_marker_1[i] = CanvasPositionMarker(position = self.new_marker_1[i], map_widget= "TkinterMapView")
+    #     for marker in self.markers:    
+    #         marker.delete()
+    #     # self.new_marker_1.clear()
+    #     self.markers = []
 
-        self.visual_marker.P1.clear()
-        self.visual_marker.d = 0
-        self.visual_marker.l = []
-        self.visual_marker.new_marker_1=[(0,0)]
+    #     self.visual_marker.P1.clear()
+    #     self.visual_marker.d = 0
+    #     self.visual_marker.l = []
+    #     self.visual_marker.new_marker_1=[(0,0)]
 
-        self.inertio_marker.P1.clear()
-        self.inertio_marker.d = 0
-        self.inertio_marker.l = []
-        self.inertio_marker.new_marker_1=[(0,0)]
+    #     self.inertio_marker.P1.clear()
+    #     self.inertio_marker.d = 0
+    #     self.inertio_marker.l = []
+    #     self.inertio_marker.new_marker_1=[(0,0)]
 
-        self.galileo_marker.P1.clear()
-        self.galileo_marker.d = 0
-        self.galileo_marker.l = []
-        self.galileo_marker.new_marker_1=[(0,0)]        
+    #     self.galileo_marker.P1.clear()
+    #     self.galileo_marker.d = 0
+    #     self.galileo_marker.l = []
+    #     self.galileo_marker.new_marker_1=[(0,0)]        
 
 
-    def clear_path_event(self):
-        for paths in self.new_path_1:
-            paths.delete()
+    # def clear_path_event(self):
+    #     for paths in self.new_path_1:
+    #         paths.delete()
 
     def change_appearance_mode(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
@@ -299,8 +304,9 @@ class App(customtkinter.CTk):
         elif new_map == "Terrain":
             self.map_widget.set_tile_server("http://a.tile.stamen.com/terrain/{z}/{x}/{y}.png",)     
 
+
     def send_message(self):
-        broker_messages = messages(brokerip = self.broker_button.get(), sourceid=self.source_id_button.get())
+        broker_messages = messages(brokerip = self.broker_button.get(), sourceid=self.source_id_button.get(), dateandtime=datetime.now())
 
         while True:
 
@@ -312,6 +318,7 @@ class App(customtkinter.CTk):
                     visual_timediff= float(self.time_visual.get()), 
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())
+                
                 print("inertio")
                 iner = broker_messages.threads_inertio(
                     inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], 
@@ -326,8 +333,7 @@ class App(customtkinter.CTk):
                     galileo_timediff=float(self.time_galileo.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())  
-                   
-                broker_messages.otinanai(messages = [vis, iner, gali])
+                broker_messages.otinanai(messages = [vis, iner, gali], progress_button = self.progress_button, windowclass = self)
                 break
 
             elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 0):
@@ -346,7 +352,7 @@ class App(customtkinter.CTk):
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
                 
-                broker_messages.otinanai(messages = [vis, iner])
+                broker_messages.otinanai(messages = [vis, iner], progress_button = self.progress_button, windowclass = self)
                 break
 
             elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 1):
@@ -365,7 +371,7 @@ class App(customtkinter.CTk):
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
                 
-                broker_messages.otinanai(messages = [vis, gali])                 
+                broker_messages.otinanai(messages = [vis, gali], progress_button = self.progress_button, windowclass = self)                 
                 break
 
             elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 1):
@@ -384,7 +390,7 @@ class App(customtkinter.CTk):
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
                 
-                broker_messages.otinanai(messages = [iner, gali])                
+                broker_messages.otinanai(messages = [iner, gali], progress_button = self.progress_button, windowclass = self)                
                 break  
 
 
@@ -397,7 +403,7 @@ class App(customtkinter.CTk):
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())
                 
-                broker_messages.otinanai(messages = [vis])              
+                broker_messages.otinanai(messages = [vis], progress_button = self.progress_button, windowclass = self)              
                 break
 
             elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 0):
@@ -409,7 +415,7 @@ class App(customtkinter.CTk):
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
                 
-                broker_messages.otinanai(messages = [iner])               
+                broker_messages.otinanai(messages = [iner], progress_button = self.progress_button, windowclass = self)               
                 break
 
             elif (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 1):
@@ -421,9 +427,9 @@ class App(customtkinter.CTk):
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
                 
-                broker_messages.otinanai(messages = [gali])            
+                broker_messages.otinanai(messages = [gali], progress_button = self.progress_button, windowclass = self)            
                 break
- 
+                
 
     def on_closing(self, event=0):
         self.destroy()
@@ -435,6 +441,7 @@ class App(customtkinter.CTk):
     
     def hi(self):
         pass
+
 
 
 if __name__ == "__main__":

@@ -26,7 +26,7 @@ class wanted_marker():
                     #raise ValueError("Cannot divide by zero")
                 else:
                     pass
-                self.d = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).km
+                self.d = geopy.distance.geodesic(self.new_marker_1[-1], self.new_marker_1[-2]).meters
                 if sum(self.l) > float(speed)*float(dt):
                     self.l = []
                     self.l.append(self.d)
