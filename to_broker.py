@@ -37,7 +37,7 @@ class messages():
             extid = 'LOC-SELF_01'
             devicesourcetype = 'VisualSelfLoc'
             types = 'SelfLocData'
-            #self.timediff = 2
+
 
         elif self.ToolID == 'LOC-IBL':
             #ToolName ='Inertial-Based Localisation'
@@ -45,7 +45,7 @@ class messages():
             extid = 'E4_01'
             devicesourcetype = 'InertioLoc'
             types = 'InrLocData'
-            # self.dateandtime = self.dateandtime + timedelta(hours = self.timediff)
+
 
         elif self.ToolID == 'LOC-GLT':
             #ToolName ='Galileo based Localization'
@@ -53,8 +53,13 @@ class messages():
             extid = 'LOC-GLT_01'
             devicesourcetype = 'GalileoLoc'
             types = 'GalileoLocData'
-            # self.dateandtime = self.dateandtime + timedelta(hours = self.timediff)
 
+        elif self.ToolID == 'LOC-FUSION':
+            #ToolName ='Galileo based Localization'
+            category = "VisualFusionLoc#FRLocation"
+            extid = 'LOC-FUSION_01'
+            devicesourcetype = 'FusionLoc'
+            types = 'FusionLocData'
 
         #ToolID ='LOC-SELF'
         #self.PublishingTopic= 'fromtool-'+ self.ToolID.lower()
@@ -97,63 +102,10 @@ class messages():
         json_tooldata['outdoor'] = self.outdoor
         json_tooldata['mounting'] = self.mounting
         
-
-
-        # json_relPos = {}
-        # json_relPos['dx'] = 1.23
-        # json_relPos['dy'] = 1.23
-        # json_relPos['dz'] = 1.23
-        # json_relPos['dyaw'] = 1.23
-        # json_relPos['dpitch'] = 1.23
-        # json_relPos['droll'] = 1.23
-        # json_tooldata['rel_pos'] = json_relPos
-
-        #json_indata['toolData'] = [json_tooldata]
-
-        #json_includedData = [json_indata] 
-        #json_data['toolPayload'] = json_includedData
         json_infoprioPayload['toolData'] =  [json_tooldata]    
         self.json_msg['infoprioPayload'] = json_infoprioPayload
         self.json_msg = json.dumps(self.json_msg) 
-        return self.json_msg #, self.dateandtime
-
-
-    # #mqtt_qos = 0
-    # def publish(self):
-    #     msg_count = 0
-    #     #while True:
-    #     #for i in range(2):
-    #     time.sleep(10)
-    #     msg = f"messages: {msg_count}"
-    #     result = self.client.publish(self.PublishingTopic, self.create_json(), qos = 0)
-    #     # result: [0, 1]
-    #     status = result[0]
-    #     if status == 0:
-    #         print(f"Send `{msg}` to topic `{self.PublishingTopic}`")
-    #     else:
-    #         print(f"Failed to send message to topic {self.PublishingTopic}")
-    #     msg_count += 1
-
-
-    # def run(self):
-    #     #client = mqtt.Client(self.ToolID)
-    #     self.client.connect(self.brokerip)
-    #     #self.client.loop_start()
-    #     self.publish()
-    #     #self.client.loop_stop()
-
-    # def publish_message(self):
-    #     # Create a new MQTT client
-    #     client = mqtt.Client(self.ToolID)
-
-    #     # Connect to the MQTT broker
-    #     client.connect('192.168.100.12')
-
-    #     # Publish the message to the specified topic
-    #     client.publish(self.PublishingTopic, self.create_json()[0])
-
-    #     # Disconnect from the MQTT broker
-    #     client.disconnect()
+        return self.json_msg
 
     def threads_visual(self, visual_latitude, visual_longitude, visual_timediff, sourceid, brokerip):
         mqtt_visual = []
@@ -164,17 +116,8 @@ class messages():
                                         dateandtime = date_visual, sourceid = sourceid, brokerip=brokerip))
             mess_visual.append([(mqtt_visual[i].create_json())])
             date_visual = date_visual + timedelta(seconds = visual_timediff)
-            # threads_visual = []
         mess_visual = (mqtt_visual[0].PublishingTopic, mess_visual, visual_timediff)
-        # for i in range((len(visual_latitude))):
-        #     for topic, message in mess_visual[i]:
-        #         t_visual = threading.Thread(target=mqtt_visual[i].publish_message(), args=(topic, message))
-        #         time.sleep(visual_timediff)
-        #         # threads_visual.append(t_visual)
         return mess_visual
-        #t_visual.start()
-        
-        
 
 ########################################################################################
 
@@ -188,16 +131,9 @@ class messages():
                                          quality=1.23456, mounting=None))
             mess_inertio.append([(mqtt_inertio[i].create_json())])
             date_inertio = date_inertio + timedelta(seconds = inertio_timediff)
-            # threads_inertio = []
         mess_inertio = (mqtt_inertio[0].PublishingTopic, mess_inertio, inertio_timediff)
-        # for i in range((len(inertio_latitude))):
-        #     for topic, message in mess_inertio[i]:
-        #         t_inertio = threading.Thread(target=mqtt_inertio[i].publish_message(), args=(topic, message))
-        #         time.sleep(inertio_timediff)
-        #         # threads_inertio.append(t_inertio)
         return mess_inertio
-        #t_visual.start()
-        #t_inertio.start()
+
 ########################################################################################
 
     def threads_galileo(self, galileo_latitude, galileo_longitude, galileo_timediff, sourceid, brokerip):
@@ -210,30 +146,24 @@ class messages():
                                          quality=1.23456, quality_heading = 0, outdoor=True))
             mess_galileo.append([(mqtt_galileo[i].create_json())])
             date_galileo = date_galileo + timedelta(seconds = galileo_timediff)
-            # threads_galileo = []
         mess_galileo = (mqtt_galileo[0].PublishingTopic, mess_galileo, galileo_timediff)
-        # for i in range((len(galileo_latitude))):
-        #     for topic, message in mess_galileo[i]:
-        #         t_galileo = threading.Thread(target=mqtt_galileo[i].publish_message(), args=(topic, message))
-        #         time.sleep(galileo_timediff)
-        #         # threads_galileo.append(t_galileo)
         return mess_galileo
-        #t_galileo.start()
 
-  
+########################################################################################
 
-    #def publish_message(self, topic, message):
-    #    # Create a new MQTT client
-    #    client = mqtt.Client(self.ToolID)
-    #
-    #    # Connect to the MQTT broker
-    #    client.connect(self.brokerip)
-    #
-    #    # Publish the message to the specified topic
-    #    client.publish(topic, message[0], qos= 0)
-    #
-    #    # Disconnect from the MQTT broker
-    #    client.disconnect()
+    def threads_fusion(self, fusion_latitude, fusion_longitude, fusion_timediff, sourceid, brokerip):
+        mqtt_fusion = []
+        mess_fusion = []
+        date_fusion = self.dateandtime
+        for i in range(len(fusion_latitude)):
+            mqtt_fusion.append(messages(ToolID = 'LOC-FUSION', lat = fusion_latitude[i], long = fusion_longitude[i],  
+                                         dateandtime = date_fusion, sourceid=sourceid, brokerip = brokerip,
+                                         quality=1.23456, quality_heading = 0, outdoor=True))
+            mess_fusion.append([(mqtt_fusion[i].create_json())])
+            date_fusion = date_fusion + timedelta(seconds = fusion_timediff)
+        mess_fusion = (mqtt_fusion[0].PublishingTopic, mess_fusion, fusion_timediff)
+        return mess_fusion  
+
 
     def publish_messages_with_delay(self, topic, message_list, delay, progress):
         client = mqtt.Client(topic)
@@ -243,6 +173,7 @@ class messages():
             message = message_list[index][0]
             progress[topic] = float(index+1) / len(message_list)
             t_begin = datetime.now()
+            self.dateandtime = t_begin
             # Edo mporeis na antikatastiseis tin ora pou eixe me tin t_begin
             client.publish(topic, message, qos= 0)
             time.sleep(delay - (datetime.now()-t_begin).seconds)
@@ -267,36 +198,4 @@ class messages():
             progress_button.configure(text= str(int(min_progress * 100)) + "%")
             windowclass.update()
 
-            #callback(min_progress)
-            # self.progress_button = customtkinter.CTkLabel(master=self.frame_left, width = 20, height = 20, text=broker_messages.min_progress)
-            # self.progress_button.grid(pady=(10, 0), padx=(5, 5), row=13, column=0)
-            #print(str(self.min_progress * 100) + "%")
-            # update to GUI element
         print("All messages published!")
-
-
-
-        # Wait for all timers to complete
-        # for timer in timers:
-        #     timer.join()
-
-        # All messages published
-
-
-# broker_messages = messages()
-# broker_messages.otinanai()
-
-
-
-
-            # Wait for all threads to complete
-            # for t in threads:
-            #     t.join()
-
-            # All messages published
-        #print("All messages published.")
-        #return self.timediff
-
-
-            # if __name__ == '__main__':
-            #     run()
