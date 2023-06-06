@@ -173,8 +173,10 @@ class messages():
             message = message_list[index][0]
             progress[topic] = float(index+1) / len(message_list)
             t_begin = datetime.now()
-            self.dateandtime = t_begin
-            # Edo mporeis na antikatastiseis tin ora pou eixe me tin t_begin
+            #Change the value of startTS with the current time
+            messtojson = json.loads(message)
+            messtojson['infoprioPayload']['startTS'] = t_begin.isoformat() 
+            message = json.dumps(messtojson)
             client.publish(topic, message, qos= 0)
             time.sleep(delay - (datetime.now()-t_begin).seconds)
 
