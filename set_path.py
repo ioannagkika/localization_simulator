@@ -11,6 +11,7 @@ class wanted_marker():
             self.l =[]
             self.new_marker_1 = []
             self.P1 = []
+            self.heading = []
 
             
 
@@ -51,8 +52,16 @@ class wanted_marker():
                         
                     self.P1.append((float(endiameso.find_destination().split(",")[0]), float(endiameso.find_destination().split(",")[1])))
                     self.l = [sum(self.l) - float(speed)*float(dt)]
+            self.heading = []
+            for i in range(len(self.P1)):
+                if i == len(self.P1)-1:
+                    heading = destination(lat1 = self.P1[len(self.P1)-2][0],  long1 = self.P1[len(self.P1)-2][1], lat2 = self.P1[len(self.P1)-1][0], long2 = self.P1[len(self.P1)-1][1]).get_bearing()
+                    self.heading.append(heading)
+                else:
+                    heading = destination(lat1 = self.P1[i][0],  long1 = self.P1[i][1], lat2 = self.P1[i+1][0], long2 = self.P1[i+1][1]).get_bearing()
+                    self.heading.append(heading)
 
             print("P1 = ", self.P1)
-            #print("new ", self.new_marker_1)
-            #print(self.d)
-            return self.d, self.new_marker_1, self.P1, self.l   
+            print("heading = ", self.heading)
+            return self.d, self.new_marker_1, self.P1, self.l, self.heading 
+        

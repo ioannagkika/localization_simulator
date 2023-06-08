@@ -5,7 +5,6 @@ import tkinter
 from pathlib import Path
 import geopy.distance
 from geopy import Point
-from additional_functions import destination
 from tkintermapview.canvas_position_marker import CanvasPositionMarker
 from set_path import wanted_marker
 from to_broker import messages
@@ -371,6 +370,7 @@ class App(customtkinter.CTk):
                 vis = broker_messages.threads_visual(
                     visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], 
                     visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
+                    visual_heading = [self.visual_marker.heading[i] for i in range(len(self.visual_marker.heading))],
                     visual_timediff= float(self.time_visual.get()), 
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())
@@ -378,6 +378,7 @@ class App(customtkinter.CTk):
                 iner = broker_messages.threads_inertio(
                     inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], 
                     inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_heading = [self.inertio_marker.heading[i] for i in range(len(self.inertio_marker.heading))],
                     inertio_timediff=float(self.time_inertio.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())               
@@ -385,6 +386,7 @@ class App(customtkinter.CTk):
                 gali = broker_messages.threads_galileo(
                     galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], 
                     galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_heading = [self.galileo_marker.heading[i] for i in range(len(self.galileo_marker.heading))],
                     galileo_timediff=float(self.time_galileo.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())  
@@ -396,6 +398,7 @@ class App(customtkinter.CTk):
                 vis = broker_messages.threads_visual(
                     visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], 
                     visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
+                    visual_heading = [self.visual_marker.heading[i] for i in range(len(self.visual_marker.heading))],
                     visual_timediff= float(self.time_visual.get()), 
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())
@@ -403,6 +406,7 @@ class App(customtkinter.CTk):
                 iner = broker_messages.threads_inertio(
                     inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], 
                     inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_heading = [self.inertio_marker.heading[i] for i in range(len(self.inertio_marker.heading))],
                     inertio_timediff=float(self.time_inertio.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())               
@@ -410,6 +414,7 @@ class App(customtkinter.CTk):
                 gali = broker_messages.threads_galileo(
                     galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], 
                     galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_heading = [self.galileo_marker.heading[i] for i in range(len(self.galileo_marker.heading))],
                     galileo_timediff=float(self.time_galileo.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())  
@@ -417,6 +422,7 @@ class App(customtkinter.CTk):
                 fus = broker_messages.threads_fusion(
                     fusion_latitude = [self.fusion_marker.P1[i][0] for i in range(len(self.fusion_marker.P1))], 
                     fusion_longitude = [self.fusion_marker.P1[i][1] for i in range(len(self.fusion_marker.P1))], 
+                    fusion_heading = [self.fusion_marker.heading[i] for i in range(len(self.fusion_marker.heading))],
                     fusion_timediff=float(self.time_fusion.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())  
@@ -428,13 +434,15 @@ class App(customtkinter.CTk):
                 vis = broker_messages.threads_visual(
                     visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], 
                     visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
+                    visual_heading = [self.visual_marker.heading[i] for i in range(len(self.visual_marker.heading))],
                     visual_timediff= float(self.time_visual.get()), 
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())                
                 print("inertio")
                 iner = broker_messages.threads_inertio(
                     inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], 
-                    inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))],
+                    inertio_heading = [self.inertio_marker.heading[i] for i in range(len(self.inertio_marker.heading))], 
                     inertio_timediff=float(self.time_inertio.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
@@ -446,6 +454,7 @@ class App(customtkinter.CTk):
                 vis = broker_messages.threads_visual(
                     visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], 
                     visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
+                    visual_heading = [self.visual_marker.heading[i] for i in range(len(self.visual_marker.heading))],
                     visual_timediff= float(self.time_visual.get()), 
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())                
@@ -453,6 +462,7 @@ class App(customtkinter.CTk):
                 iner = broker_messages.threads_inertio(
                     inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], 
                     inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_heading = [self.inertio_marker.heading[i] for i in range(len(self.inertio_marker.heading))],
                     inertio_timediff=float(self.time_inertio.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
@@ -460,6 +470,7 @@ class App(customtkinter.CTk):
                 fus = broker_messages.threads_fusion(
                     fusion_latitude = [self.fusion_marker.P1[i][0] for i in range(len(self.fusion_marker.P1))], 
                     fusion_longitude = [self.fusion_marker.P1[i][1] for i in range(len(self.fusion_marker.P1))], 
+                    fusion_heading = [self.fusion_marker.heading[i] for i in range(len(self.fusion_marker.heading))],
                     fusion_timediff=float(self.time_fusion.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())  
@@ -472,6 +483,7 @@ class App(customtkinter.CTk):
                 vis = broker_messages.threads_visual(
                     visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], 
                     visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
+                    visual_heading = [self.visual_marker.heading[i] for i in range(len(self.visual_marker.heading))],
                     visual_timediff= float(self.time_visual.get()), 
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())                
@@ -479,6 +491,7 @@ class App(customtkinter.CTk):
                 gali = broker_messages.threads_galileo(
                     galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], 
                     galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_heading = [self.galileo_marker.heading[i] for i in range(len(self.galileo_marker.heading))],
                     galileo_timediff=float(self.time_galileo.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
@@ -490,6 +503,7 @@ class App(customtkinter.CTk):
                 vis = broker_messages.threads_visual(
                     visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], 
                     visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
+                    visual_heading = [self.visual_marker.heading[i] for i in range(len(self.visual_marker.heading))],
                     visual_timediff= float(self.time_visual.get()), 
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())                
@@ -497,6 +511,7 @@ class App(customtkinter.CTk):
                 gali = broker_messages.threads_galileo(
                     galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], 
                     galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_heading = [self.galileo_marker.heading[i] for i in range(len(self.galileo_marker.heading))],
                     galileo_timediff=float(self.time_galileo.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
@@ -504,6 +519,7 @@ class App(customtkinter.CTk):
                 fus = broker_messages.threads_fusion(
                     fusion_latitude = [self.fusion_marker.P1[i][0] for i in range(len(self.fusion_marker.P1))], 
                     fusion_longitude = [self.fusion_marker.P1[i][1] for i in range(len(self.fusion_marker.P1))], 
+                    fusion_heading = [self.fusion_marker.heading[i] for i in range(len(self.fusion_marker.heading))],
                     fusion_timediff=float(self.time_fusion.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())
@@ -515,6 +531,7 @@ class App(customtkinter.CTk):
                 iner = broker_messages.threads_inertio(
                     inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], 
                     inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_heading = [self.inertio_marker.heading[i] for i in range(len(self.inertio_marker.heading))],
                     inertio_timediff=float(self.time_inertio.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())           
@@ -522,6 +539,7 @@ class App(customtkinter.CTk):
                 gali = broker_messages.threads_galileo(
                     galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], 
                     galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_heading = [self.galileo_marker.heading[i] for i in range(len(self.galileo_marker.heading))],
                     galileo_timediff=float(self.time_galileo.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
@@ -533,6 +551,7 @@ class App(customtkinter.CTk):
                 iner = broker_messages.threads_inertio(
                     inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], 
                     inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_heading = [self.inertio_marker.heading[i] for i in range(len(self.inertio_marker.heading))],
                     inertio_timediff=float(self.time_inertio.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())           
@@ -540,6 +559,7 @@ class App(customtkinter.CTk):
                 gali = broker_messages.threads_galileo(
                     galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], 
                     galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_heading = [self.galileo_marker.heading[i] for i in range(len(self.galileo_marker.heading))],
                     galileo_timediff=float(self.time_galileo.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
@@ -547,6 +567,7 @@ class App(customtkinter.CTk):
                 fus = broker_messages.threads_fusion(
                     fusion_latitude = [self.fusion_marker.P1[i][0] for i in range(len(self.fusion_marker.P1))], 
                     fusion_longitude = [self.fusion_marker.P1[i][1] for i in range(len(self.fusion_marker.P1))], 
+                    fusion_heading = [self.fusion_marker.heading[i] for i in range(len(self.fusion_marker.heading))],
                     fusion_timediff=float(self.time_fusion.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())
@@ -559,6 +580,7 @@ class App(customtkinter.CTk):
                 vis = broker_messages.threads_visual(
                     visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], 
                     visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
+                    visual_heading = [self.visual_marker.heading[i] for i in range(len(self.visual_marker.heading))],
                     visual_timediff= float(self.time_visual.get()), 
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())
@@ -570,6 +592,7 @@ class App(customtkinter.CTk):
                 vis = broker_messages.threads_visual(
                     visual_latitude = [self.visual_marker.P1[i][0] for i in range(len(self.visual_marker.P1))], 
                     visual_longitude = [self.visual_marker.P1[i][1] for i in range(len(self.visual_marker.P1))], 
+                    visual_heading = [self.visual_marker.heading[i] for i in range(len(self.visual_marker.heading))],
                     visual_timediff= float(self.time_visual.get()), 
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())
@@ -577,6 +600,7 @@ class App(customtkinter.CTk):
                 fus = broker_messages.threads_fusion(
                     fusion_latitude = [self.fusion_marker.P1[i][0] for i in range(len(self.fusion_marker.P1))], 
                     fusion_longitude = [self.fusion_marker.P1[i][1] for i in range(len(self.fusion_marker.P1))], 
+                    fusion_heading = [self.fusion_marker.heading[i] for i in range(len(self.fusion_marker.heading))],
                     fusion_timediff=float(self.time_fusion.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())
@@ -588,6 +612,7 @@ class App(customtkinter.CTk):
                 iner = broker_messages.threads_inertio(
                     inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], 
                     inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_heading = [self.inertio_marker.heading[i] for i in range(len(self.inertio_marker.heading))],
                     inertio_timediff=float(self.time_inertio.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
@@ -599,6 +624,7 @@ class App(customtkinter.CTk):
                 iner = broker_messages.threads_inertio(
                     inertio_latitude = [self.inertio_marker.P1[i][0] for i in range(len(self.inertio_marker.P1))], 
                     inertio_longitude = [self.inertio_marker.P1[i][1] for i in range(len(self.inertio_marker.P1))], 
+                    inertio_heading = [self.inertio_marker.heading[i] for i in range(len(self.inertio_marker.heading))],
                     inertio_timediff=float(self.time_inertio.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
@@ -606,6 +632,7 @@ class App(customtkinter.CTk):
                 fus = broker_messages.threads_fusion(
                     fusion_latitude = [self.fusion_marker.P1[i][0] for i in range(len(self.fusion_marker.P1))], 
                     fusion_longitude = [self.fusion_marker.P1[i][1] for i in range(len(self.fusion_marker.P1))], 
+                    fusion_heading = [self.fusion_marker.heading[i] for i in range(len(self.fusion_marker.heading))],
                     fusion_timediff=float(self.time_fusion.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())
@@ -617,6 +644,7 @@ class App(customtkinter.CTk):
                 gali = broker_messages.threads_galileo(
                     galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], 
                     galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_heading = [self.galileo_marker.heading[i] for i in range(len(self.galileo_marker.heading))],
                     galileo_timediff=float(self.time_galileo.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
@@ -628,6 +656,7 @@ class App(customtkinter.CTk):
                 gali = broker_messages.threads_galileo(
                     galileo_latitude = [self.galileo_marker.P1[i][0] for i in range(len(self.galileo_marker.P1))], 
                     galileo_longitude = [self.galileo_marker.P1[i][1] for i in range(len(self.galileo_marker.P1))], 
+                    galileo_heading = [self.galileo_marker.heading[i] for i in range(len(self.galileo_marker.heading))],
                     galileo_timediff=float(self.time_galileo.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
@@ -635,6 +664,7 @@ class App(customtkinter.CTk):
                 fus = broker_messages.threads_fusion(
                     fusion_latitude = [self.fusion_marker.P1[i][0] for i in range(len(self.fusion_marker.P1))], 
                     fusion_longitude = [self.fusion_marker.P1[i][1] for i in range(len(self.fusion_marker.P1))], 
+                    fusion_heading = [self.fusion_marker.heading[i] for i in range(len(self.fusion_marker.heading))],
                     fusion_timediff=float(self.time_fusion.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())                
@@ -646,6 +676,7 @@ class App(customtkinter.CTk):
                 fus = broker_messages.threads_fusion(
                     fusion_latitude = [self.fusion_marker.P1[i][0] for i in range(len(self.fusion_marker.P1))], 
                     fusion_longitude = [self.fusion_marker.P1[i][1] for i in range(len(self.fusion_marker.P1))], 
+                    fusion_heading = [self.fusion_marker.heading[i] for i in range(len(self.fusion_marker.heading))],
                     fusion_timediff=float(self.time_fusion.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())                
