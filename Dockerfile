@@ -16,6 +16,6 @@ COPY set_path.py ./set_path.py
 COPY to_broker.py ./to_broker.py
 
 RUN pip install -r requirements.txt
-ENV DISPLAY=:0
+ENV DISPLAY :0
 #ENTRYPOINT sh docker_entrypoint.sh
 CMD ["python", "./print_path.py"]
