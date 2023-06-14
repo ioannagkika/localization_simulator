@@ -2,14 +2,8 @@ import customtkinter
 from tkintermapview import TkinterMapView
 from PIL import Image, ImageTk
 import tkinter
-from pathlib import Path
-import geopy.distance
-from geopy import Point
-from tkintermapview.canvas_position_marker import CanvasPositionMarker
 from set_path import wanted_marker
 from to_broker import messages
-import sys
-import time
 from datetime import datetime
 
 customtkinter.set_default_color_theme("blue")
@@ -17,7 +11,7 @@ customtkinter.set_default_color_theme("blue")
 
 class App(customtkinter.CTk):
 
-    APP_NAME = "TkinterMapView with CustomTkinter"
+    APP_NAME = "Localization Simulator - Press Ctl+Q to quit"
     WIDTH = 900
     HEIGHT = 600
 
@@ -29,9 +23,7 @@ class App(customtkinter.CTk):
         self.minsize(App.WIDTH, App.HEIGHT)
 
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
-        self.bind("<Command-q>", self.on_closing)
-        self.bind("<Command-w>", self.on_closing)
-        self.createcommand('tk::mac::Quit', self.on_closing)
+        self.bind("<Control-q>", self.on_closing)
 
         # ============ create two CTkFrames ============
 
@@ -156,8 +148,8 @@ class App(customtkinter.CTk):
         self.new_marker_1 = [] #list of every coordinate, both the ones added by the user and the wanted ones
         self.new_path_1 = []
         #self.icon = icon
-        self.filename = "./visual.png"
-        self.icon = ImageTk.PhotoImage(Image.open(self.filename).resize((60, 60)))
+        # self.filename = "./visual.png"
+        # self.icon = ImageTk.PhotoImage(Image.open(self.filename).resize((60, 60)))
         #self.d = 0 #distance between two markers
         #self.P1 = [] #list of the wanted markers
         #self.l =[] #list that appends the distances between the markers that we have added until the sum of the distances gets the wanted value (speed * time diff)

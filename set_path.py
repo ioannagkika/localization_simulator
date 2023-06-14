@@ -1,9 +1,9 @@
 import geopy.distance
-from geopy import Point
+#from geopy import Point
 from additional_functions import destination
-from tkintermapview.canvas_position_marker import CanvasPositionMarker
+#from tkintermapview.canvas_position_marker import CanvasPositionMarker
 import tkinter
-import sys
+#import sys
 
 class wanted_marker():
         def __init__(self) -> None:

@@ -8,6 +8,7 @@ RUN apt-get install sudo
 
 RUN pip install --upgrade pip
 
+ENV DISPLAY=host.docker.internal:0
 WORKDIR /localization_simulator
 COPY requirements.txt ./requirements.txt
 COPY additional_functions.py ./additional_functions.py
@@ -16,6 +17,9 @@ COPY set_path.py ./set_path.py
 COPY to_broker.py ./to_broker.py
 
 RUN pip install -r requirements.txt
-ENV DISPLAY :0
+
+# PORT-FORWARDING
+EXPOSE 1883
+
 #ENTRYPOINT sh docker_entrypoint.sh
 CMD ["python", "./print_path.py"]

@@ -1,16 +1,16 @@
 import paho.mqtt.client as mqtt
-import paho.mqtt.publish as publish
+#import paho.mqtt.publish as publish
 import json
 from datetime import datetime, timedelta
 import time
 import threading
 import numpy as np
-from additional_functions import destination
+#from additional_functions import destination
 
 class messages():
 
     def __init__(self, lat = 1, long = 1, heading = 0, dateandtime = datetime(2023, 5, 11, 12, 36, 57, 643401), 
-                 PublishingTopic= "hi", json_msg = {}, brokerip = '192.168.100.12' , frid = 'FR003', ToolID = 'LOC-SELF', 
+                 PublishingTopic= "hi", json_msg = {}, brokerip = '127.0.0.1' , frid = 'FR003', ToolID = 'LOC-SELF', 
                  sourceid = "FR001#FR", quality = None, quality_heading = None, outdoor = None, mounting = "helmet") -> None:
         #self.tool = tool
         self.brokerip = brokerip
@@ -36,32 +36,25 @@ class messages():
         if self.ToolID == 'LOC-SELF':
             #ToolName ='Visual based self-Localization'
             category = "VisualSelfLoc#FRLocation"
-            extid = 'LOC-SELF_01'
-            devicesourcetype = 'VisualSelfLoc'
+
             types = 'SelfLocData'
 
 
         elif self.ToolID == 'LOC-IBL':
             #ToolName ='Inertial-Based Localisation'
             category = "INERTIO#LocationUpdate"
-            extid = 'E4_01'
-            devicesourcetype = 'InertioLoc'
             types = 'InrLocData'
 
 
         elif self.ToolID == 'LOC-GLT':
             #ToolName ='Galileo based Localization'
             category = "GalileoLoc#FRLocation"
-            extid = 'LOC-GLT_01'
-            devicesourcetype = 'GalileoLoc'
-            types = 'GalileoLocData'
+            types = 'GalLocData'
 
         elif self.ToolID == 'LOC-FUSION':
             #ToolName ='Galileo based Localization'
             category = "VisualFusionLoc#FRLocation"
-            extid = 'LOC-FUSION_01'
-            devicesourcetype = 'FusionLoc'
-            types = 'FusionLocData'
+            types = 'FusLocData'
 
         #ToolID ='LOC-SELF'
         #self.PublishingTopic= 'fromtool-'+ self.ToolID.lower()
@@ -74,6 +67,7 @@ class messages():
                 
         json_infoprioPayload = {}
         json_infoprioPayload['category'] = category
+        json_infoprioPayload['type'] = types
         self.dateandtime = self.dateandtime
         json_infoprioPayload['startTS'] = self.dateandtime.isoformat() 
         
