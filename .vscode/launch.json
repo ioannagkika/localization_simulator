@@ -8,7 +8,7 @@
             "name": "Simulator",
             "type": "python",
             "request": "launch",
-            "program": "print_path.py",
+            "program": "./code/print_path.py",
             "console": "integratedTerminal",
             "justMyCode": true
         }

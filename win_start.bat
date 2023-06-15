@@ -1,1 +1,1 @@
-docker run simulator1
+docker run ioannagkika/localization_simulator
