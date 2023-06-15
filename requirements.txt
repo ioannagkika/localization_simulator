@@ -13,6 +13,10 @@ numpy==1.24.3
 paho-mqtt==1.6.1
 Pillow==9.5.0
 pyperclip==1.8.2
+<<<<<<< Updated upstream
+=======
+# pywin32==306
+>>>>>>> Stashed changes
 ratelim==0.1.6
 requests==2.31.0
 six==1.16.0
