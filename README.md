@@ -1,6 +1,6 @@
 This is the code for the localization simulator. The simulator can work both in Windows and Linux.
 
-You can either pull the repository from Gitlab or pull the Docker image by running the command:
+You can pull the Docker image by running the command:
 docker pull ioannagkika/localization_simulator:latest
 
 Next steps are: 
