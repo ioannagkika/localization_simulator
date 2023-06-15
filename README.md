@@ -18,3 +18,8 @@ In Linux:
 - Download the lin_start.sh file from GitLab.
 - Run lin_start.sh file. (You may need to make it executable first using the command: chmod +x lin_start.sh)
 - In case you wish to connect to the broker remotely using VPN, you can do this before clicking the send to broker button of the GUI.
+
+If you don't want to use Docker:
+
+- Install all the requirements with the command: pip install -r requirements.txt
+- Run the file print_path.py
