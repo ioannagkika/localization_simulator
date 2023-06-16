@@ -1,10 +1,5 @@
 This is the code for the localization simulator. The simulator can work both in Windows and Linux.
 
-You can pull the Docker image by running the command:
-docker pull ioannagkika/localization_simulator:latest
-
-Next steps are: 
-
 In Windows: 
 - Install the VcXsrv Windows X Server (you can download it from here: https://sourceforge.net/projects/vcxsrv/). While installing, go with all the default settings, 
 but do note to check “Disable access control”.
