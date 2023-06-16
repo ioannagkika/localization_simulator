@@ -1,1 +1,2 @@
+docker pull ioannagkika/localization_simulator
 docker run ioannagkika/localization_simulator
