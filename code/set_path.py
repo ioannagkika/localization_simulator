@@ -56,9 +56,17 @@ class wanted_marker():
             for i in range(len(self.P1)):
                 if i == len(self.P1)-1:
                     heading = destination(lat1 = self.P1[len(self.P1)-2][0],  long1 = self.P1[len(self.P1)-2][1], lat2 = self.P1[len(self.P1)-1][0], long2 = self.P1[len(self.P1)-1][1]).get_bearing()
+                    if heading >= 0:
+                        pass
+                    else:
+                        heading = 360 + heading
                     self.heading.append(heading)
                 else:
                     heading = destination(lat1 = self.P1[i][0],  long1 = self.P1[i][1], lat2 = self.P1[i+1][0], long2 = self.P1[i+1][1]).get_bearing()
+                    if heading >= 0:
+                        pass
+                    else:
+                        heading = 360 + heading
                     self.heading.append(heading)
 
             print("P1 = ", self.P1)
