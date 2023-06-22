@@ -70,23 +70,6 @@ class messages():
         json_infoprioPayload['type'] = types
         self.dateandtime = self.dateandtime
         json_infoprioPayload['startTS'] = self.dateandtime.isoformat() 
-        
-
-        # json_location = {}
-        # json_location['geometryType'] = 'Point'
-        # json_location['coordinatePairs'] = [45.19567392091811, 6.667046347228574]
-        # json_data['locationData'] = json_location
-
-        # json_source = {}
-        # json_source['extID'] = extid
-        # json_source['frID'] = 'FR003'
-        # json_source['deviceSourceType'] = devicesourcetype
-
-        # json_indata={}
-        # json_indata['type'] = types
-        # json_indata['creationTS'] = self.dateandtime
-
-        # json_indata['source'] = json_source
 
         json_tooldata={}
         if self.lat != None: json_tooldata['latitude'] = self.lat
