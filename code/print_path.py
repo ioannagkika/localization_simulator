@@ -1,6 +1,5 @@
 import customtkinter
 from tkintermapview import TkinterMapView
-from PIL import Image, ImageTk
 import tkinter
 from set_path import wanted_marker
 from to_broker import messages
@@ -12,8 +11,8 @@ customtkinter.set_default_color_theme("blue")
 class App(customtkinter.CTk):
 
     APP_NAME = "Localization Simulator - Press Ctl+Q to quit"
-    WIDTH = 900
-    HEIGHT = 600
+    WIDTH = 1200
+    HEIGHT = 650
 
     def __init__(self,  icon: tkinter.PhotoImage = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -42,81 +41,106 @@ class App(customtkinter.CTk):
         self.frame_left.grid_rowconfigure(2, weight=1)
 
         self.broker_button = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="Broker IP")
-        self.broker_button.grid(pady=(10, 0), padx=(5, 5), row=0, column=0)
-
-        # self.datetime_button = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="datetime")
-        # self.datetime_button.grid(pady=(10, 0), padx=(5, 5), row=1, column=0)
-
+        self.broker_button.grid(pady=(10, 0), padx=(5, 0), row=0, column=0)
 
         self.source_id_button = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="source ID")
-        self.source_id_button.grid(pady=(10, 0), padx=(5, 5), row=2, column=0, sticky = "n")  
-
-        # self.clear = customtkinter.CTkButton(master=self.frame_left,
-        #                                         text="Clear Markers",
-        #                                         command=self.clear_marker_event, fg_color="red", hover_color="pink")
-        # self.clear.grid(pady=(20, 0), padx=(5, 5), row=3, column=0)
+        self.source_id_button.grid(pady=(10, 0), padx=(5, 0), row=2, column=0, sticky = "n")  
 
         self.send = customtkinter.CTkButton(master=self.frame_left, text="send to broker", command = self.send_message, fg_color="green", hover_color="light green")
-        self.send.grid(pady=(10, 0), padx=(5, 5), row=4, column=0)
+        self.send.grid(pady=(10, 0), padx=(5, 0), row=4, column=0)
 
 
         self.map_label = customtkinter.CTkLabel(self.frame_left, text="Tile Server:", anchor="w")
-        self.map_label.grid(row=5, column=0, padx=(0, 0), pady=(20, 0))
+        self.map_label.grid(row=5, column=0, padx=(5, 0), pady=(20, 0))
         self.map_option_menu = customtkinter.CTkOptionMenu(self.frame_left, values=["OpenStreetMap", "Google normal", "Google satellite", "Paint", "Black and White", "Terrain"],
                                                                        command=self.change_map)
-        self.map_option_menu.grid(row=6, column=0, padx=(0, 0), pady=(10, 0))
+        self.map_option_menu.grid(row=6, column=0, padx=(5, 0), pady=(10, 0))
 
         self.appearance_mode_label = customtkinter.CTkLabel(self.frame_left, text="Appearance Mode:", anchor="w")
-        self.appearance_mode_label.grid(row=7, column=0, padx=(0, 0), pady=(10, 0))
+        self.appearance_mode_label.grid(row=7, column=0, padx=(5, 0), pady=(10, 0))
         self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.frame_left, values=["Light", "Dark", "System"],
                                                                        command=self.change_appearance_mode)
-        self.appearance_mode_optionemenu.grid(row=8, column=0, padx=(0, 0), pady=(10, 0))
+        self.appearance_mode_optionemenu.grid(row=8, column=0, padx=(5, 0), pady=(10, 0))
 
+        self.switches = customtkinter.CTkLabel(self.frame_left, text="Enable noise") 
+        self.switches.grid(row=9, column=1, padx=(50, 0), pady=(40, 0))   
+        self.tools = customtkinter.CTkLabel(self.frame_left, text="Choose tool(s)") 
+        self.tools.grid(row=9, column=0, padx=(50, 0), pady=(40, 0)) 
 
         self.var1 = tkinter.IntVar()
         self.var2 = tkinter.IntVar()
         self.var3 = tkinter.IntVar()
         self.var4 = tkinter.IntVar()
+        self.switch_visual = customtkinter.StringVar(value="off")
+        self.switch_inertio = customtkinter.StringVar(value="off")
+        self.switch_galileo = customtkinter.StringVar(value="off")
+        self.switch_fusion = customtkinter.StringVar(value="off")
 
         self.visual_button = customtkinter.CTkCheckBox(master=self.frame_left, 
                                                   text = "visual",
                                                   command=self.hi,
                                                   variable=self.var1, onvalue=1, offvalue=0)
-        self.visual_button.grid(pady=(10, 0), padx=(0, 0), row=9, column=0)
-        self.time_visual = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff (s)")
-        self.time_visual.grid(pady=(10, 0), padx=(10, 20), row=9, column=1)
+        self.visual_button.grid(pady=(10, 0), padx=(0, 10), row=10, column=0)
+        self.time_visual = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff (s)", width = 90)
+        self.time_visual.grid(pady=(10, 0), padx=(150, 10), row=10, column=0)
+        self.visual_noise = customtkinter.CTkSwitch(master=self.frame_left, 
+                                                  text = "",
+                                                  command=self.hi,
+                                                  variable=self.switch_visual, onvalue="on", offvalue="off", progress_color="green")
+        self.visual_noise.grid(pady=(10, 0), padx=(20, 50), row=10, column=1)
+        self.visual_std = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="noise std", width = 90)
+        self.visual_std.grid(pady=(10, 0), padx=(100, 40), row=10, column=1)
+
 
         self.inertio_button = customtkinter.CTkCheckBox(master=self.frame_left, 
                                                   text="inertio",
                                                   command=self.hi,
                                                   variable=self.var2, onvalue=1, offvalue=0)
-        self.inertio_button.grid(pady=(10, 0), padx=(0, 0), row=10, column=0)
-        self.time_inertio = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff (s)")
-        self.time_inertio.grid(pady=(10, 0), padx=(10, 20), row=10, column=1)
+        self.inertio_button.grid(pady=(10, 0), padx=(0, 10), row=11, column=0)
+        self.time_inertio = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff (s)", width = 90)
+        self.time_inertio.grid(pady=(10, 0), padx=(150, 10), row=11, column=0)
+        self.inertio_noise = customtkinter.CTkSwitch(master=self.frame_left, 
+                                                  text = "",
+                                                  command=self.hi,
+                                                  variable=self.switch_inertio, onvalue="on", offvalue="off", progress_color="green")
+        self.inertio_noise.grid(pady=(10, 0), padx=(20, 50), row=11, column=1)
+        self.inertio_std = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="noise std", width = 90)
+        self.inertio_std.grid(pady=(10, 0), padx=(100, 40), row=11, column=1)
+
 
         self.galileo_button = customtkinter.CTkCheckBox(master=self.frame_left, 
                                                   text="galileo",
                                                   command=self.hi,
                                                   variable=self.var3, onvalue=1, offvalue=0)
-        self.galileo_button.grid(pady=(10, 0), padx=(0, 0), row=11, column=0)
-        self.time_galileo = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff (s)")
-        self.time_galileo.grid(pady=(10, 0), padx=(10, 20), row=11, column=1)
+        self.galileo_button.grid(pady=(10, 0), padx=(0, 10), row=12, column=0)
+        self.time_galileo = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff (s)", width = 90)
+        self.time_galileo.grid(pady=(10, 0), padx=(150, 10), row=12, column=0)
+        self.galileo_noise = customtkinter.CTkSwitch(master=self.frame_left, 
+                                                  text = "",
+                                                  command=self.hi,
+                                                  variable=self.switch_galileo, onvalue="on", offvalue="off", progress_color="green")
+        self.galileo_noise.grid(pady=(10, 0), padx=(20, 50), row=12, column=1)
+        self.galileo_std = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="noise std", width = 90)
+        self.galileo_std.grid(pady=(10, 0), padx=(100, 40), row=12, column=1)
+
 
         self.fusion_button = customtkinter.CTkCheckBox(master=self.frame_left, 
                                                   text="fusion",
                                                   command=self.hi,
                                                   variable=self.var4, onvalue=1, offvalue=0)
-        self.fusion_button.grid(pady=(10, 0), padx=(0, 0), row=12, column=0)
-        self.time_fusion = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff (s)")
-        self.time_fusion.grid(pady=(10, 0), padx=(10, 20), row=12, column=1)
+        self.fusion_button.grid(pady=(10, 0), padx=(0, 10), row=13, column=0)
+        self.time_fusion = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="time diff (s)", width = 90)
+        self.time_fusion.grid(pady=(10, 0), padx=(150, 10), row=13, column=0)
+        self.fusion_noise = customtkinter.CTkSwitch(master=self.frame_left, 
+                                                  text = "",
+                                                  command=self.hi,
+                                                  variable=self.switch_fusion, onvalue="on", offvalue="off", progress_color="green")
+        self.fusion_noise.grid(pady=(10, 0), padx=(20, 50), row=13, column=1)
+        self.fusion_std = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="noise std", width = 90)
+        self.fusion_std.grid(pady=(10, 0), padx=(100, 40), row=13, column=1)
 
-        self.speed = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="speed (m/s)")
-        self.speed.grid(pady=(10, 20), padx=(0, 0), row=13, column=0)
-
-
-
-
-
+        self.speed = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="speed (m/s)", width = 90)
+        self.speed.grid(pady=(20, 20), padx=(0, 10), row=14, column=0)
 
         # ============ frame_right ============
 
@@ -140,28 +164,21 @@ class App(customtkinter.CTk):
                                                 command=self.search_event)
         self.button_8.grid(row=0, column=1, sticky="w", padx=(12, 0), pady=12)
 
-
         # Set default values
         self.map_widget.set_address("Thessaloniki")
         self.map_option_menu.set("OpenStreetMap")
         self.appearance_mode_optionemenu.set("Light")
         self.new_marker_1 = [] #list of every coordinate, both the ones added by the user and the wanted ones
-        self.new_path_1 = []
-        #self.icon = icon
-        # self.filename = "./visual.png"
-        # self.icon = ImageTk.PhotoImage(Image.open(self.filename).resize((60, 60)))
-        #self.d = 0 #distance between two markers
-        #self.P1 = [] #list of the wanted markers
-        #self.l =[] #list that appends the distances between the markers that we have added until the sum of the distances gets the wanted value (speed * time diff)
         self.markers=[]
         self.map_widget.add_right_click_menu_command(label="Add Marker",
                                         command=self.add_marker_event,
                                         pass_coords=True)
+        
+        self.progress = customtkinter.CTkLabel(self.frame_left, text="Progress") 
+        self.progress.grid(row=15, column=0, padx=(300, 0), pady=(10, 40)) 
         self.progress_button = customtkinter.CTkLabel(master=self.frame_left, width = 20, height = 20, text="0%")
-        self.progress_button.grid(pady=(10, 0), padx=(5, 5), row=14, column=0)
-
-
-                                
+        self.progress_button.grid(pady=(10, 40), padx=(0, 200), row=15, column=1)
+                 
         self.visual_marker = wanted_marker()
         self.inertio_marker = wanted_marker()
         self.galileo_marker = wanted_marker()
@@ -175,162 +192,155 @@ class App(customtkinter.CTk):
     def add_marker_event(self, coords = (0,0)):
         print("Add marker:", coords)
     
-        new_marker = self.map_widget.set_marker(coords[0], coords[1], text = "("+ str(coords[0]) +","+ str(coords[1])+")", font = "Tahoma 9", text_color = '#e61212')#, icon = self.set_icon())
-        #self.new_marker_1.append(new_marker.position)
+        new_marker = self.map_widget.set_marker(coords[0], coords[1], text = "("+ str(coords[0]) +","+ str(coords[1])+")", font = "Tahoma 9", text_color = '#e61212')
         self.markers.append(new_marker)
 
             # Check the values of variables and execute the corresponding code
         while True:
             if (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 0) & (self.var4.get() == 0):
                 tkinter.messagebox.showerror(title=None, message="No tool selected. Please restart.")
-                #sys.exit("No tool selected")
-                # self.clear_marker_event()
-                # self.clear_path_event()
                 assert ((self.var1.get() == 1) or (self.var2.get() == 1) or (self.var3.get() == 1) or (self.var4.get() == 1)), "No tool selected"
 
             elif (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 0) & (self.var4.get() == 1):
                 print("fusion")          
                 self.fusion_marker.new_marker_1.append(new_marker.position)
-                self.fusion_marker.set_marker(dt = self.time_fusion.get(), speed = self.speed.get())
+                self.fusion_marker.set_marker(dt = self.time_fusion.get(), speed = self.speed.get(), noise = self.switch_fusion.get(), std = self.fusion_std.get())
                 break
-
 
             elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 1) & (self.var4.get() == 0):
                 print("visual")
                 self.visual_marker.new_marker_1.append(new_marker.position)
-                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
+                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get(), noise = self.switch_visual.get(), std = self.visual_std.get())
                 print("inertio")
                 self.inertio_marker.new_marker_1.append(new_marker.position)
-                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
+                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get(), noise = self.switch_inertio.get(), std = self.inertio_std.get())
                 print("galileo")          
                 self.galileo_marker.new_marker_1.append(new_marker.position)
-                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
+                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get(), noise = self.switch_galileo.get(), std = self.galileo_std.get())
                 break
 
             elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 1) & (self.var4.get() == 1):
                 print("visual")
                 self.visual_marker.new_marker_1.append(new_marker.position)
-                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
+                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get(), noise = self.switch_visual.get(), std = self.visual_std.get())
                 print("inertio")
                 self.inertio_marker.new_marker_1.append(new_marker.position)
-                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
+                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get(), noise = self.switch_inertio.get(), std = self.inertio_std.get())
                 print("galileo")          
                 self.galileo_marker.new_marker_1.append(new_marker.position)
-                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
+                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get(), noise = self.switch_galileo.get(), std = self.galileo_std.get())
                 print("fusion")          
                 self.fusion_marker.new_marker_1.append(new_marker.position)
-                self.fusion_marker.set_marker(dt = self.time_fusion.get(), speed = self.speed.get())
+                self.fusion_marker.set_marker(dt = self.time_fusion.get(), speed = self.speed.get(), noise = self.switch_fusion.get(), std = self.fusion_std.get())
                 break            
 
             elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 0) & (self.var4.get() == 0):
                 print("visual")
                 self.visual_marker.new_marker_1.append(new_marker.position)
-                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
+                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get(), noise = self.switch_visual.get(), std = self.visual_std.get())
                 print("inertio")
                 self.inertio_marker.new_marker_1.append(new_marker.position)
-                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
+                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get(), noise = self.switch_inertio.get(), std = self.inertio_std.get())
                 break
 
             elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 0) & (self.var4.get() == 1):
                 print("visual")
                 self.visual_marker.new_marker_1.append(new_marker.position)
-                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
+                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get(), noise = self.switch_visual.get(), std = self.visual_std.get())
                 print("inertio")
                 self.inertio_marker.new_marker_1.append(new_marker.position)
-                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
+                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get(), noise = self.switch_inertio.get(), std = self.inertio_std.get())
                 print("fusion")          
                 self.fusion_marker.new_marker_1.append(new_marker.position)
-                self.fusion_marker.set_marker(dt = self.time_fusion.get(), speed = self.speed.get())                
+                self.fusion_marker.set_marker(dt = self.time_fusion.get(), speed = self.speed.get(), noise = self.switch_fusion.get(), std = self.fusion_std.get())                
                 break
-
 
             elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 1) & (self.var4.get() == 0):
                 print("visual")
                 self.visual_marker.new_marker_1.append(new_marker.position)
-                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
+                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get(), noise = self.switch_visual.get(), std = self.visual_std.get())
                 print("galileo")
                 self.galileo_marker.new_marker_1.append(new_marker.position)
-                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
+                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get(), noise = self.switch_galileo.get(), std = self.galileo_std.get())
                 break
 
             elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 1) & (self.var4.get() == 1):
                 print("visual")
                 self.visual_marker.new_marker_1.append(new_marker.position)
-                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
+                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get(), noise = self.switch_visual.get(), std = self.visual_std.get())
                 print("galileo")
                 self.galileo_marker.new_marker_1.append(new_marker.position)
-                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
+                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get(), noise = self.switch_galileo.get(), std = self.galileo_std.get())
                 print("fusion")          
                 self.fusion_marker.new_marker_1.append(new_marker.position)
-                self.fusion_marker.set_marker(dt = self.time_fusion.get(), speed = self.speed.get())   
+                self.fusion_marker.set_marker(dt = self.time_fusion.get(), speed = self.speed.get(), noise = self.switch_fusion.get(), std = self.fusion_std.get())   
                 break
 
             elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 1) & (self.var4.get() == 0):
                 print("inertio")
                 self.inertio_marker.new_marker_1.append(new_marker.position)
-                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
+                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get(), noise = self.switch_inertio.get(), std = self.inertio_std.get())
                 print("galileo")
                 self.galileo_marker.new_marker_1.append(new_marker.position)
-                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
+                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get(), noise = self.switch_galileo.get(), std = self.galileo_std.get())
                 break  
 
             elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 1) & (self.var4.get() == 1):
                 print("inertio")
                 self.inertio_marker.new_marker_1.append(new_marker.position)
-                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
+                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get(), noise = self.switch_inertio.get(), std = self.inertio_std.get())
                 print("galileo")
                 self.galileo_marker.new_marker_1.append(new_marker.position)
-                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
+                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get(), noise = self.switch_galileo.get(), std = self.galileo_std.get())
                 print("fusion")          
                 self.fusion_marker.new_marker_1.append(new_marker.position)
-                self.fusion_marker.set_marker(dt = self.time_fusion.get(), speed = self.speed.get())   
+                self.fusion_marker.set_marker(dt = self.time_fusion.get(), speed = self.speed.get(), noise = self.switch_fusion.get(), std = self.fusion_std.get())   
                 break  
-
 
             elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 0) & (self.var4.get() == 0):
                 print("visual")
                 self.visual_marker.new_marker_1.append(new_marker.position)
                 print(new_marker.position)
-                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
+                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get(), noise = self.switch_visual.get(), std = self.visual_std.get())
                 break
 
             elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 0) & (self.var4.get() == 1):
                 print("visual")
                 self.visual_marker.new_marker_1.append(new_marker.position)
-                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get())
+                self.visual_marker.set_marker(dt = self.time_visual.get(), speed = self.speed.get(), noise = self.switch_visual.get(), std = self.visual_std.get())
                 print("fusion")          
                 self.fusion_marker.new_marker_1.append(new_marker.position)
-                self.fusion_marker.set_marker(dt = self.time_fusion.get(), speed = self.speed.get()) 
+                self.fusion_marker.set_marker(dt = self.time_fusion.get(), speed = self.speed.get(), noise = self.switch_fusion.get(), std = self.fusion_std.get()) 
                 break
 
             elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 0) & (self.var4.get() == 0):
                 print("inertio")
                 self.inertio_marker.new_marker_1.append(new_marker.position)
-                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
+                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get(), noise = self.switch_inertio.get(), std = self.inertio_std.get())
                 break
         
             elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 0) & (self.var4.get() == 1):
                 print("inertio")
                 self.inertio_marker.new_marker_1.append(new_marker.position)
-                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get())
+                self.inertio_marker.set_marker(dt = self.time_inertio.get(), speed = self.speed.get(), noise = self.switch_inertio.get(), std = self.inertio_std.get())
                 print("fusion")          
                 self.fusion_marker.new_marker_1.append(new_marker.position)
-                self.fusion_marker.set_marker(dt = self.time_fusion.get(), speed = self.speed.get()) 
+                self.fusion_marker.set_marker(dt = self.time_fusion.get(), speed = self.speed.get(), noise = self.switch_fusion.get(), std = self.fusion_std.get()) 
                 break
 
             elif (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 1) & (self.var4.get() == 0):
                 print("galileo")
                 self.galileo_marker.new_marker_1.append(new_marker.position)
-                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
+                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get(), noise = self.switch_galileo.get(), std = self.galileo_std.get())
                 break
 
             elif (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 1) & (self.var4.get() == 1):
                 print("galileo")
                 self.galileo_marker.new_marker_1.append(new_marker.position)
-                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get())
+                self.galileo_marker.set_marker(dt = self.time_galileo.get(), speed = self.speed.get(), noise = self.switch_galileo.get(), std = self.galileo_std.get())
                 print("fusion")          
                 self.fusion_marker.new_marker_1.append(new_marker.position)
-                self.fusion_marker.set_marker(dt = self.time_fusion.get(), speed = self.speed.get())                 
+                self.fusion_marker.set_marker(dt = self.time_fusion.get(), speed = self.speed.get(), noise = self.switch_fusion.get(), std = self.fusion_std.get())                 
                 break
 
 
@@ -469,7 +479,6 @@ class App(customtkinter.CTk):
                 broker_messages.otinanai(messages = [vis, iner, fus], progress_button = self.progress_button, windowclass = self)
                 break
 
-
             elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 1) & (self.var4.get() == 0):
                 print("visual")
                 vis = broker_messages.threads_visual(
@@ -565,7 +574,6 @@ class App(customtkinter.CTk):
                     sourceid=self.source_id_button.get())
                 broker_messages.otinanai(messages = [iner, gali, fus], progress_button = self.progress_button, windowclass = self)                
                 break              
-
 
             elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 0) & (self.var4.get() == 0):
                 print("visual")
@@ -685,7 +693,6 @@ class App(customtkinter.CTk):
     
     def hi(self):
         pass
-
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 from geopy.distance import geodesic
 from geopy import Point
-import numpy
+import numpy as np
 import math
 
 class destination:
@@ -16,8 +16,8 @@ class destination:
         dLon = (self.long2 - self.long1)
         x = math.cos(math.radians(self.lat2)) * math.sin(math.radians(dLon))
         y = math.cos(math.radians(self.lat1)) * math.sin(math.radians(self.lat2)) - math.sin(math.radians(self.lat1)) * math.cos(math.radians(self.lat2)) * math.cos(math.radians(dLon))
-        brng = numpy.arctan2(x,y)
-        brng = numpy.degrees(brng)
+        brng = np.arctan2(x,y)
+        brng = np.degrees(brng)
         return brng
 
     def find_destination(self):
@@ -27,13 +27,4 @@ class destination:
 
     def point_given_heading(self):
         coords = geodesic(meters=self.distance_meters).destination(Point(self.lat1, self.long1), self.heading).format_decimal()
-        return coords        
-        
-
-# print(get_bearing(40.693441180545996, 22.851500848046868, 40.655425024320344, 22.950377801171868))
-# ob1 = destination(lat1 = 40.675276088681606, long1 = 22.943221872649406, lat2 = 40.681692284226834, long2 = 22.965326442838325, kms =2)
-# print(ob1.get_bearing())
-
-# distance = geodesic((40.670009126290765, 22.880339959374993), (40.64562656008282, 22.93004419945957)).meters
-# print(distance)
-# print(ob1.find_destination())
+        return tuple(float(i) for i in coords.split(','))      
