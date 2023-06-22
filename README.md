@@ -26,8 +26,7 @@ _On the left side of the GUI you will see some text boxes, buttons, etc._
 - The "send to broker" button should be clicked whenever your scenario is ready and you want to send the messages to the Broker).
 - The Tile Server is an Option Menu, where you can choose the type of the map you wish to have.
 - The Appearance Mode is an Option Menu, where you can choose if you want dark or light mode.
-- The 4 check boxes give you the freedom to choose which tools you wish to have in your simulator and the text boxes next to 
-them are for you to complete the time difference (in seconds) between each message sent by each tool.
+- The 4 check boxes give you the freedom to choose which tools you wish to have in your simulator, the text boxes next to them (time diff (s)) are for you to complete the time difference (in seconds) between each message sent by each tool, the switches next to the are for enabling noise to the data. Adding random noise means that the point will be near the "real" point, but it will have a distance (random number coming from a normal distribution) from it, in a random direction (random number comming from a normal distribution in (0,360)). The mean of the normal distribution is always 0 and the standard deviation is being definded by the user in the textbox noise std.
 - The last text box is the speed (in meters/second) that the FR has.
 - At the bottom of the left side you can see a percentage. This is the percentage of the progress of the messages sent to the broker.
 
