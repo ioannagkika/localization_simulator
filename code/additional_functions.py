@@ -9,7 +9,7 @@ class destination:
         self.lat2 = lat2
         self.long1 = long1
         self.long2 = long2
-        self.distance_meters = distance_meters # Attention: Although it is written kms it's the distance in meters!!!
+        self.distance_meters = distance_meters
         self.heading = heading
 
     def get_bearing(self):
