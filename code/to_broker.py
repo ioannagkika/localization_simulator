@@ -1,11 +1,9 @@
 import paho.mqtt.client as mqtt
-#import paho.mqtt.publish as publish
 import json
 from datetime import datetime, timedelta
 import time
 import threading
 import numpy as np
-#from additional_functions import destination
 
 class messages():
 
