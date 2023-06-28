@@ -15,6 +15,7 @@ In Linux:
 
 If you don't want to use Docker:
 
+- Clone the repository
 - Install all the requirements with the command: pip install -r requirements.txt
 - Run the file print_path.py
 
