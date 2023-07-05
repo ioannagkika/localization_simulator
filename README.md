@@ -5,12 +5,12 @@ This is the code for the localization simulator. The simulator can work both in 
 In Windows: 
 - Install the VcXsrv Windows X Server (you can download it from here: https://sourceforge.net/projects/vcxsrv/). While installing, go with all the default settings, but do note to check “Disable access control”.
 - Launch the x server. Try looking for xlaunch.exe at the default install location “C:\Program Files\VcXsrv\xlaunch.exe”
-- Download the win_start.bat file from GitLab.
+- Download the win_start.bat file from here.
 - Run the win_start.bat
 
 In Linux:
 - Install "x11-xserver-utils" Package by running this command: sudo apt-get install x11-xserver-utils.
-- Download the lin_start.sh file from GitLab.
+- Download the lin_start.sh file from here.
 - Run lin_start.sh file. (You may need to make it executable first using the command: chmod +x lin_start.sh)
 
 If you don't want to use Docker:
