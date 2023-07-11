@@ -162,7 +162,7 @@ class messages():
         client.disconnect()
 
     # Publish messages with delays using multiple timers
-    def otinanai(self, messages, progress_button, windowclass):
+    def send_messages_with_progress(self, messages, progress_button, windowclass):
         print("Begun sending messages!")
 
         progress = {}

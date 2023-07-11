@@ -392,7 +392,7 @@ class App(customtkinter.CTk):
                     galileo_timediff=float(self.time_galileo.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())  
-                broker_messages.otinanai(messages = [vis, iner, gali], progress_button = self.progress_button, windowclass = self)
+                broker_messages.send_messages_with_progress(messages = [vis, iner, gali], progress_button = self.progress_button, windowclass = self)
                 break
 
             elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 1) & (self.var4.get() == 1):
@@ -428,7 +428,7 @@ class App(customtkinter.CTk):
                     fusion_timediff=float(self.time_fusion.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())  
-                broker_messages.otinanai(messages = [vis, iner, gali, fus], progress_button = self.progress_button, windowclass = self)
+                broker_messages.send_messages_with_progress(messages = [vis, iner, gali, fus], progress_button = self.progress_button, windowclass = self)
                 break
 
             elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 0) & (self.var4.get() == 0):
@@ -448,7 +448,7 @@ class App(customtkinter.CTk):
                     inertio_timediff=float(self.time_inertio.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
-                broker_messages.otinanai(messages = [vis, iner], progress_button = self.progress_button, windowclass = self)
+                broker_messages.send_messages_with_progress(messages = [vis, iner], progress_button = self.progress_button, windowclass = self)
                 break
 
             elif (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 0) & (self.var4.get() == 1):
@@ -476,7 +476,7 @@ class App(customtkinter.CTk):
                     fusion_timediff=float(self.time_fusion.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())  
-                broker_messages.otinanai(messages = [vis, iner, fus], progress_button = self.progress_button, windowclass = self)
+                broker_messages.send_messages_with_progress(messages = [vis, iner, fus], progress_button = self.progress_button, windowclass = self)
                 break
 
             elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 1) & (self.var4.get() == 0):
@@ -496,7 +496,7 @@ class App(customtkinter.CTk):
                     galileo_timediff=float(self.time_galileo.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
-                broker_messages.otinanai(messages = [vis, gali], progress_button = self.progress_button, windowclass = self)                 
+                broker_messages.send_messages_with_progress(messages = [vis, gali], progress_button = self.progress_button, windowclass = self)                 
                 break
 
             elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 1) & (self.var4.get() == 1):
@@ -524,7 +524,7 @@ class App(customtkinter.CTk):
                     fusion_timediff=float(self.time_fusion.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())
-                broker_messages.otinanai(messages = [vis, gali, fus], progress_button = self.progress_button, windowclass = self)                 
+                broker_messages.send_messages_with_progress(messages = [vis, gali, fus], progress_button = self.progress_button, windowclass = self)                 
                 break
 
             elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 1) & (self.var4.get() == 0):
@@ -544,7 +544,7 @@ class App(customtkinter.CTk):
                     galileo_timediff=float(self.time_galileo.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
-                broker_messages.otinanai(messages = [iner, gali], progress_button = self.progress_button, windowclass = self)                
+                broker_messages.send_messages_with_progress(messages = [iner, gali], progress_button = self.progress_button, windowclass = self)                
                 break 
 
             elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 1) & (self.var4.get() == 1):
@@ -572,7 +572,7 @@ class App(customtkinter.CTk):
                     fusion_timediff=float(self.time_fusion.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())
-                broker_messages.otinanai(messages = [iner, gali, fus], progress_button = self.progress_button, windowclass = self)                
+                broker_messages.send_messages_with_progress(messages = [iner, gali, fus], progress_button = self.progress_button, windowclass = self)                
                 break              
 
             elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 0) & (self.var4.get() == 0):
@@ -584,7 +584,7 @@ class App(customtkinter.CTk):
                     visual_timediff= float(self.time_visual.get()), 
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())
-                broker_messages.otinanai(messages = [vis], progress_button = self.progress_button, windowclass = self)              
+                broker_messages.send_messages_with_progress(messages = [vis], progress_button = self.progress_button, windowclass = self)              
                 break
 
             elif (self.var1.get() == 1) & (self.var2.get() == 0) & (self.var3.get() == 0) & (self.var4.get() == 1):
@@ -604,7 +604,7 @@ class App(customtkinter.CTk):
                     fusion_timediff=float(self.time_fusion.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())
-                broker_messages.otinanai(messages = [vis, fus], progress_button = self.progress_button, windowclass = self)              
+                broker_messages.send_messages_with_progress(messages = [vis, fus], progress_button = self.progress_button, windowclass = self)              
                 break
 
             elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 0) & (self.var4.get() == 0):
@@ -616,7 +616,7 @@ class App(customtkinter.CTk):
                     inertio_timediff=float(self.time_inertio.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
-                broker_messages.otinanai(messages = [iner], progress_button = self.progress_button, windowclass = self)               
+                broker_messages.send_messages_with_progress(messages = [iner], progress_button = self.progress_button, windowclass = self)               
                 break
 
             elif (self.var1.get() == 0) & (self.var2.get() == 1) & (self.var3.get() == 0) & (self.var4.get() == 1):
@@ -636,7 +636,7 @@ class App(customtkinter.CTk):
                     fusion_timediff=float(self.time_fusion.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())
-                broker_messages.otinanai(messages = [iner, fus], progress_button = self.progress_button, windowclass = self)               
+                broker_messages.send_messages_with_progress(messages = [iner, fus], progress_button = self.progress_button, windowclass = self)               
                 break
 
             elif (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 1) & (self.var4.get() == 0):
@@ -648,7 +648,7 @@ class App(customtkinter.CTk):
                     galileo_timediff=float(self.time_galileo.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get()) 
-                broker_messages.otinanai(messages = [gali], progress_button = self.progress_button, windowclass = self)            
+                broker_messages.send_messages_with_progress(messages = [gali], progress_button = self.progress_button, windowclass = self)            
                 break
 
             elif (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 1) & (self.var4.get() == 1):
@@ -668,7 +668,7 @@ class App(customtkinter.CTk):
                     fusion_timediff=float(self.time_fusion.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())                
-                broker_messages.otinanai(messages = [gali, fus], progress_button = self.progress_button, windowclass = self)            
+                broker_messages.send_messages_with_progress(messages = [gali, fus], progress_button = self.progress_button, windowclass = self)            
                 break
 
             elif (self.var1.get() == 0) & (self.var2.get() == 0) & (self.var3.get() == 0) & (self.var4.get() == 1):            
@@ -680,7 +680,7 @@ class App(customtkinter.CTk):
                     fusion_timediff=float(self.time_fusion.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())                
-                broker_messages.otinanai(messages = [fus], progress_button = self.progress_button, windowclass = self)            
+                broker_messages.send_messages_with_progress(messages = [fus], progress_button = self.progress_button, windowclass = self)            
                 break
 
     def on_closing(self, event=0):
