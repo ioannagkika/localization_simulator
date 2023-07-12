@@ -51,7 +51,7 @@ class messages():
 
         elif self.ToolID == 'LOC-FUSION':
             #ToolName ='Galileo based Localization'
-            category = "VisualFusionLoc#FRLocation"
+            category = "FusionLoc#FRLocation"
             types = 'FusLocData'
 
         #ToolID ='LOC-SELF'
