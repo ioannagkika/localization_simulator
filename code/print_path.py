@@ -4,6 +4,9 @@ import tkinter
 from set_path import wanted_marker
 from to_broker import messages
 from datetime import datetime
+from PIL import Image
+import os
+import shutil
 
 customtkinter.set_default_color_theme("blue")
 
@@ -46,8 +49,20 @@ class App(customtkinter.CTk):
         self.source_id_button = customtkinter.CTkEntry(master=self.frame_left, placeholder_text="source ID")
         self.source_id_button.grid(pady=(10, 0), padx=(5, 0), row=2, column=0, sticky = "n")  
 
-        self.send = customtkinter.CTkButton(master=self.frame_left, text="send to broker", command = self.send_message, fg_color="green", hover_color="light green")
+        self.send_image = customtkinter.CTkImage(light_image=Image.open(os.path.join("./", "send2.png")), size=(20, 20))
+
+        self.send = customtkinter.CTkButton(master=self.frame_left, text="send to broker", command = self.send_message, fg_color="green", hover_color="light green", image=self.send_image)
         self.send.grid(pady=(10, 0), padx=(5, 0), row=4, column=0)
+
+        self.save_image = customtkinter.CTkImage(light_image=Image.open(os.path.join("./", "disk2.png")), size=(20, 20))
+        
+        self.save = customtkinter.CTkButton(master=self.frame_left, text="save messages", command = self.save_message, fg_color="purple", hover_color="magenta", image=self.save_image)
+        self.save.grid(pady=(10, 0), padx=(5, 0), row=4, column=1)
+
+        self.load_image = customtkinter.CTkImage(light_image=Image.open(os.path.join("./", "load4.png")), size=(20, 20))
+
+        self.load = customtkinter.CTkButton(master=self.frame_left, text="load messages", command = self.load_message, fg_color="purple", hover_color="magenta", image=self.load_image)
+        self.load.grid(pady=(10, 0), padx=(5, 0), row=5, column=1)
 
 
         self.map_label = customtkinter.CTkLabel(self.frame_left, text="Tile Server:", anchor="w")
@@ -693,6 +708,74 @@ class App(customtkinter.CTk):
     
     def hi(self):
         pass
+
+    def save_message(self):
+        #Remove the existing folders
+        if os.path.exists("visual"):
+            shutil.rmtree("visual")
+        if os.path.exists("inertio"):
+            shutil.rmtree("inertio")
+        if os.path.exists("galileo"):
+            shutil.rmtree("galileo")
+        if os.path.exists("fusion"):
+            shutil.rmtree("fusion")     
+        #Create new ones
+        if self.var1.get() == 1:
+            os.makedirs("visual")
+            with open("./visual/vis_data.txt", 'w') as file:
+                file.write(str(self.visual_marker.P1) + 
+                           "\n" + str(self.visual_marker.heading) + 
+                           "\n" + str(float(self.time_visual.get())))
+        if self.var2.get() == 1:
+            os.makedirs("inertio")
+            with open("./inertio/iner_data.txt", 'w') as file:
+                file.write(str(self.inertio_marker.P1) + 
+                           "\n" + str(self.inertio_marker.heading) + 
+                           "\n" + str(float(self.time_inertio.get())))
+        if self.var3.get() == 1:
+            os.makedirs("galileo")
+            with open("./galileo/gali_data.txt", 'w') as file:
+                file.write(str(self.galileo_marker.P1) + 
+                           "\n" + str(self.galileo_marker.heading) + 
+                           "\n" + str(float(self.time_galileo.get())))
+        if self.var4.get() == 1:
+            os.makedirs("fusion")
+            with open("./fusion/fus_data.txt", 'w') as file:
+                file.write(str(self.fusion_marker.P1) + 
+                           "\n" + str(self.fusion_marker.heading) + 
+                           "\n" + str(float(self.time_fusion.get())))
+
+    def load_message(self):
+        self.var1.set(0)
+        self.var2.set(0)
+        self.var3.set(0)
+        self.var4.set(0)
+        broker_messages = messages(brokerip = self.broker_button.get(), sourceid=self.source_id_button.get(), dateandtime=datetime.now())
+        if os.path.exists("visual"):
+            self.var1.set(1)
+            with open("./visual/vis_data.txt", 'r') as file:
+                self.visual_marker.P1 = file.readlines()[0].rstrip('\n')
+                self.visual_marker.heading = file.readlines()[1].rstrip('\n')
+                self.time_visual.set(file.readlines()[2].rstrip('\n'))
+        if os.path.exists("inertio"):
+            self.var2.set(1)
+            with open("./inertio/iner_data.txt", 'r') as file:
+                self.inertio_marker.P1 = file.readlines()[0].rstrip('\n')
+                self.inertio_marker.heading = file.readlines()[1].rstrip('\n')
+                self.time_inertio.set(file.readlines()[2].rstrip('\n'))
+        if os.path.exists("galileo"):
+            self.var3.set(1)
+            with open("./galileo/gali_data.txt", 'r') as file:
+                self.galileo_marker.P1 = file.readlines()[0].rstrip('\n')
+                self.galileo_marker.heading = file.readlines()[1].rstrip('\n')
+                self.time_galileo.set(file.readlines()[2].rstrip('\n'))
+        if os.path.exists("fusion"):
+            self.var4.set(1)
+            with open("./fusion/fus_data.txt", 'r') as file:
+                self.fusion_marker.P1 = file.readlines()[0].rstrip('\n')
+                self.fusion_marker.heading = file.readlines()[1].rstrip('\n')
+                self.time_fusion.set(file.readlines()[2].rstrip('\n'))
+
 
 
 if __name__ == "__main__":

@@ -28,3 +28,5 @@ class destination:
     def point_given_heading(self):
         coords = geodesic(meters=self.distance_meters).destination(Point(self.lat1, self.long1), self.heading).format_decimal()
         return tuple(float(i) for i in coords.split(','))      
+
+
