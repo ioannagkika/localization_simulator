@@ -54,7 +54,7 @@ class App(customtkinter.CTk):
 
         self.send_image = customtkinter.CTkImage(light_image=Image.open(os.path.join("./", "send2.png")), size=(20, 20))
 
-        self.send = customtkinter.CTkButton(master=self.frame_left, text="send to broker", command = self.send_message, fg_color="green", hover_color="light green", image=self.send_image)
+        self.send = customtkinter.CTkButton(master=self.frame_left, text="send to broker", command = self.send_message, fg_color="green", hover_color="light green", image=self.send_image, state = "normal")
         self.send.grid(pady=(10, 0), padx=(5, 0), row=4, column=0)
 
         self.save_image = customtkinter.CTkImage(light_image=Image.open(os.path.join("./", "disk2.png")), size=(20, 20))
@@ -381,10 +381,10 @@ class App(customtkinter.CTk):
 
 
     def send_message(self):
+        self.send.configure(state = "disabled")
         broker_messages = messages(brokerip = self.broker_button.get(), sourceid=self.source_id_button.get(), dateandtime=datetime.now())
 
         while True:
-
             if (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 1) & (self.var4.get() == 0):
                 print("visual")
                 vis = broker_messages.threads_visual(
@@ -698,8 +698,9 @@ class App(customtkinter.CTk):
                     fusion_timediff=float(self.time_fusion.get()),
                     brokerip = self.broker_button.get(), 
                     sourceid=self.source_id_button.get())                
-                broker_messages.send_messages_with_progress(messages = [fus], progress_button = self.progress_button, windowclass = self)            
+                broker_messages.send_messages_with_progress(messages = [fus], progress_button = self.progress_button, windowclass = self)        
                 break
+        self.send.configure(state = "normal")
 
     def on_closing(self, event=0):
         self.destroy()
@@ -723,44 +724,48 @@ class App(customtkinter.CTk):
         if os.path.exists("fusion"):
             shutil.rmtree("fusion")     
         #Create new ones
-        folder = "Session" + str(datetime.now().strftime("%Y%m%d-%H%M%S"))
-        os.makedirs(folder)
+        folder = filedialog.askdirectory(initialdir=os.getcwd() ,title='Select folder to save results')
+        print(folder)
         if self.var1.get() == 1:
-            os.makedirs("./{}/visual".format(folder))
-            with open("./{}/visual/vis_data.txt".format(folder), 'w') as file:
+            os.makedirs("{}/visual".format(folder))
+            with open("{}/visual/vis_data.txt".format(folder), 'w') as file:
                 file.write(str(self.visual_marker.P1) + 
                            "\n" + str(self.visual_marker.heading) + 
                            "\n" + str(float(self.time_visual.get())) +
                            "\n" + str(float(self.speed.get())) +
                            "\n" + str(self.switch_visual.get()) +
-                           "\n" + (' ' if self.visual_std.get()=='' else str(float(self.visual_std.get()))))
+                           "\n" + (' ' if self.visual_std.get()=='' else str(float(self.visual_std.get()))) +
+                           "\n" + str([ast.literal_eval(self.markers[i].text) for i in range(len(self.markers))]))
         if self.var2.get() == 1:
-            os.makedirs("./{}/inertio".format(folder))
-            with open("./{}/inertio/iner_data.txt".format(folder), 'w') as file:
+            os.makedirs("{}/inertio".format(folder))
+            with open("{}/inertio/iner_data.txt".format(folder), 'w') as file:
                 file.write(str(self.inertio_marker.P1) + 
                            "\n" + str(self.inertio_marker.heading) + 
                            "\n" + str(float(self.time_inertio.get())) +
                            "\n" + str(float(self.speed.get())) +
                            "\n" + str(self.switch_inertio.get()) +
-                           "\n" + (' ' if self.inertio_std.get()=='' else str(float(self.inertio_std.get()))))
+                           "\n" + (' ' if self.inertio_std.get()=='' else str(float(self.inertio_std.get())))+
+                           "\n" + str([ast.literal_eval(self.markers[i].text) for i in range(len(self.markers))]))
         if self.var3.get() == 1:
-            os.makedirs("./{}/galileo".format(folder))
-            with open("./{}/galileo/gali_data.txt".format(folder), 'w') as file:
+            os.makedirs("{}/galileo".format(folder))
+            with open("{}/galileo/gali_data.txt".format(folder), 'w') as file:
                 file.write(str(self.galileo_marker.P1) + 
                            "\n" + str(self.galileo_marker.heading) + 
                            "\n" + str(float(self.time_galileo.get())) +
                            "\n" + str(float(self.speed.get())) +
                            "\n" + str(self.switch_galileo.get()) +
-                           "\n" + (' ' if self.galileo_std.get()=='' else str(float(self.galileo_std.get()))))
+                           "\n" + (' ' if self.galileo_std.get()=='' else str(float(self.galileo_std.get())))+
+                           "\n" + str([ast.literal_eval(self.markers[i].text) for i in range(len(self.markers))]))
         if self.var4.get() == 1:
-            os.makedirs("./{}/fusion".format(folder))
-            with open("./{}/fusion/fus_data.txt".format(folder), 'w') as file:
+            os.makedirs("{}/fusion".format(folder))
+            with open("{}/fusion/fus_data.txt".format(folder), 'w') as file:
                 file.write(str(self.fusion_marker.P1) + 
                            "\n" + str(self.fusion_marker.heading) + 
                            "\n" + str(float(self.time_fusion.get())) +
                            "\n" + str(float(self.speed.get())) +
                            "\n" + str(self.switch_fusion.get()) +
-                           "\n" + (' ' if self.fusion_std.get()=='' else str(float(self.fusion_std.get()))))
+                           "\n" + (' ' if self.fusion_std.get()=='' else str(float(self.fusion_std.get())))+
+                           "\n" + str([ast.literal_eval(self.markers[i].text) for i in range(len(self.markers))]))
 
     def load_message(self):
         self.var1.set(0)
@@ -781,8 +786,6 @@ class App(customtkinter.CTk):
         print(filename)
         if os.path.exists("{}/visual".format(filename)):
             self.var1.set(1)
-            img = "./visual.png"
-            visual_icon = ImageTk.PhotoImage(Image.open(img).resize((30, 30)))
             with open("{}/visual/vis_data.txt".format(filename), "r") as f:    lines = [ line.rstrip() for line in f ]
             self.visual_marker.P1 = ast.literal_eval(lines[0])
             self.visual_marker.heading = json.loads(lines[1])
@@ -790,12 +793,12 @@ class App(customtkinter.CTk):
             if self.speed.get()=='': self.speed.insert(0,lines[3]) 
             self.switch_visual.set(lines[4])
             self.visual_std.insert(0, "") if lines[5].strip() == ' ' else self.visual_std.insert(0, lines[5])
-            for coords in self.visual_marker.P1:
-                self.map_widget.set_marker(coords[0], coords[1], text = "("+ str(coords[0]) +","+ str(coords[1])+")", font = "Tahoma 9", text_color = '#e61212', icon = visual_icon)
+            pin = ast.literal_eval(lines[6])
+            for i in range(len(pin)):
+                self.map_widget.set_marker(pin[i][0], pin[i][1], text = "("+ str(pin[i][0]) +","+ str(pin[i][1])+")", font = "Tahoma 9", text_color = '#e61212')
+
         if os.path.exists("{}/inertio".format(filename)):
             self.var2.set(1)
-            img = "./inertio.png"
-            inertio_icon = ImageTk.PhotoImage(Image.open(img).resize((30, 30)))
             with open("{}/inertio/iner_data.txt".format(filename), 'r') as f:    lines = [ line.strip() for line in f ]
             self.inertio_marker.P1 = ast.literal_eval(lines[0])
             self.inertio_marker.heading = json.loads(lines[1])
@@ -803,27 +806,26 @@ class App(customtkinter.CTk):
             if self.speed.get()=='': self.speed.insert(0,lines[3]) 
             self.switch_inertio.set(lines[4])
             self.inertio_std.insert(0, "") if lines[5].strip() == ' ' else self.inertio_std.insert(0, lines[5])
-            for coords in self.inertio_marker.P1:
-                self.map_widget.set_marker(coords[0], coords[1], text = "("+ str(coords[0]) +","+ str(coords[1])+")", 
-                                           font = "Tahoma 9", text_color = '#e61212', icon = inertio_icon)
+            pin = ast.literal_eval(lines[6])
+            for i in range(len(pin)):
+                self.map_widget.set_marker(pin[i][0], pin[i][1], text = "("+ str(pin[i][0]) +","+ str(pin[i][1])+")", font = "Tahoma 9", text_color = '#e61212')
+
+
         if os.path.exists("{}/galileo".format(filename)):
             self.var3.set(1)
-            img = "./galileo.png"
-            galileo_icon = ImageTk.PhotoImage(Image.open(img).resize((30, 30)))
             with open("{}/galileo/gali_data.txt".format(filename), 'r') as f:    lines = [ line.strip() for line in f ]
             self.galileo_marker.P1 = ast.literal_eval(lines[0])
             self.galileo_marker.heading = json.loads(lines[1])
             self.time_galileo.insert(0,lines[2])
             if self.speed.get()=='': self.speed.insert(0,lines[3]) 
             self.switch_galileo.set(lines[4])
-            self.galileo_std.insert(0, "") if lines[5].strip() == ' ' else self.galileo_std.insert(0, lines[5])   
-            for coords in self.galileo_marker.P1:
-                self.map_widget.set_marker(coords[0], coords[1], text = "("+ str(coords[0]) +","+ str(coords[1])+")", 
-                                           font = "Tahoma 9", text_color = '#e61212', icon = galileo_icon)         
+            self.galileo_std.insert(0, "") if lines[5].strip() == ' ' else self.galileo_std.insert(0, lines[5])
+            pin = ast.literal_eval(lines[6])
+            for i in range(len(pin)):
+                self.map_widget.set_marker(pin[i][0], pin[i][1], text = "("+ str(pin[i][0]) +","+ str(pin[i][1])+")", font = "Tahoma 9", text_color = '#e61212') 
+
         if os.path.exists("{}/fusion".format(filename)):
             self.var4.set(1)
-            img = "./fusion.png"
-            fusion_icon = ImageTk.PhotoImage(Image.open(img).resize((30, 30)))
             with open("{}/fusion/fus_data.txt".format(filename), 'r') as f:    lines = [ line.strip() for line in f ]
             self.fusion_marker.P1 = ast.literal_eval(lines[0])
             self.fusion_marker.heading = json.loads(lines[1])
@@ -831,9 +833,9 @@ class App(customtkinter.CTk):
             if self.speed.get()=='': self.speed.insert(0,lines[3]) 
             self.switch_fusion.set(lines[4])
             self.fusion_std.insert(0, "") if lines[5].strip() == ' ' else self.fusion_std.insert(0, lines[5])
-            for coords in self.fusion_marker.P1:
-                self.map_widget.set_marker(coords[0], coords[1], text = "("+ str(coords[0]) +","+ str(coords[1])+")", 
-                                           font = "Tahoma 9", text_color = '#e61212', icon = fusion_icon)
+            pin = ast.literal_eval(lines[6])
+            for i in range(len(pin)):
+                self.map_widget.set_marker(pin[i][0], pin[i][1], text = "("+ str(pin[i][0]) +","+ str(pin[i][1])+")", font = "Tahoma 9", text_color = '#e61212')
 
 
 if __name__ == "__main__":

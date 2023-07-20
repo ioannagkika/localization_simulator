@@ -10,11 +10,12 @@ RUN pip install --upgrade pip
 
 ENV DISPLAY=host.docker.internal:0
 WORKDIR /localization_simulator
-COPY requirements.txt ./requirements.txt
-COPY additional_functions.py ./additional_functions.py
-COPY print_path.py ./print_path.py
-COPY set_path.py ./set_path.py
-COPY to_broker.py ./to_broker.py
+RUN mkdir -p ./code
+COPY ./code ./code
+COPY ./disk2.png ./
+COPY ./load4.png ./
+COPY ./send2.png ./
+COPY ./requirements.txt ./
 
 RUN pip install -r requirements.txt
 
@@ -22,4 +23,4 @@ RUN pip install -r requirements.txt
 EXPOSE 1883
 
 #ENTRYPOINT sh docker_entrypoint.sh
-CMD ["python", "./print_path.py"]
+CMD ["python", "./code/print_path.py"]

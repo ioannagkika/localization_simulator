@@ -1,5 +1,5 @@
-# sudo apt-get install x11-xserver-utils
-sudo docker pull ioannagkika/localization_simulator
+docker pull ioannagkika/localization_simulator
 xhost +
-sudo docker run --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" ioannagkika/localization_simulator
+docker run -it --name simulator --net=host --env="DISPLAY" -v /home:/localization_simulator/C ioannagkika/localization_simulator
+docker rm --volumes simulator
 xhost -
