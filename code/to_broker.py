@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import time
 import threading
 import numpy as np
+import random
 
 class messages():
 
@@ -144,7 +145,7 @@ class messages():
 
 
     def publish_messages_with_delay(self, topic, message_list, delay, progress):
-        client = mqtt.Client(topic)
+        client = mqtt.Client(topic + str(random.randint(0, 2000000000)))
         client.connect(self.brokerip)
     
         for index in range(len(message_list)):
