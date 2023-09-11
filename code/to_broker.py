@@ -151,14 +151,14 @@ class messages():
         for index in range(len(message_list)):
             message = message_list[index][0]
             progress[topic] = float(index+1) / len(message_list)
-            t_begin = datetime.now()
+            t_begin = datetime.utcnow()
             #Change the value of startTS with the current time
             messtojson = json.loads(message)
             messtojson['infoprioPayload']['startTS'] = t_begin.isoformat() 
            # messtojson['infoprioPayload']['toolData']['heading'] = destination.get_bearing()
             message = json.dumps(messtojson)
             client.publish(topic, message, qos= 0)
-            time.sleep(delay - (datetime.now()-t_begin).seconds)
+            time.sleep(delay - (datetime.utcnow()-t_begin).seconds)
 
         client.disconnect()
 

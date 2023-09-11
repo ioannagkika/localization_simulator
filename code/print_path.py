@@ -382,7 +382,7 @@ class App(customtkinter.CTk):
 
     def send_message(self):
         self.send.configure(state = "disabled")
-        broker_messages = messages(brokerip = self.broker_button.get(), sourceid=self.source_id_button.get(), dateandtime=datetime.now())
+        broker_messages = messages(brokerip = self.broker_button.get(), sourceid=self.source_id_button.get(), dateandtime=datetime.utcnow())
 
         while True:
             if (self.var1.get() == 1) & (self.var2.get() == 1) & (self.var3.get() == 1) & (self.var4.get() == 0):
@@ -781,7 +781,7 @@ class App(customtkinter.CTk):
         self.inertio_std.delete(0, tkinter.END)
         self.galileo_std.delete(0, tkinter.END)
         self.fusion_std.delete(0, tkinter.END)
-        broker_messages = messages(brokerip = self.broker_button.get(), sourceid=self.source_id_button.get(), dateandtime=datetime.now())
+        broker_messages = messages(brokerip = self.broker_button.get(), sourceid=self.source_id_button.get(), dateandtime=datetime.utcnow())
         filename = filedialog.askdirectory(initialdir=os.getcwd())
         print(filename)
         if os.path.exists("{}/visual".format(filename)):
